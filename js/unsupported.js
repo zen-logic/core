@@ -1,0 +1,2 @@
+alert('browser not supported');
+

@@ -1,2 +1,2 @@
 # core
-A pure Javascript desktop window manager and UI toolkit
+A pure Javascript desktop UI toolkit and window manager
