@@ -1,6 +1,5 @@
 import './core.js';
 
-let core = window.core !== undefined ? window.core : {};
 
 const util = {
 

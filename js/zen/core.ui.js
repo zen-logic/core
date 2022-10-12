@@ -1,9 +1,7 @@
-let core = window.core !== undefined ? window.core : {};
-
 import './core.js';
 import './core.util.js';
 
-var stylesheets = [];
+let stylesheets = [];
 
 const ui = {
 
@@ -47,6 +45,8 @@ const ui = {
 		o = {
 			tag: o.tag !== undefined ? o.tag : 'div',
 			attr: o.attr !== undefined ? o.attr : {},
+			cls: o.cls !== undefined ? o.cls : [],
+			id: o.id !== undefined ? o.id : null,
 			parent: o.parent !== undefined ? o.parent : document.body,
 			content: o.content !== undefined ? o.content : '',
 			first: o.first !== undefined ? o.first : false
@@ -55,12 +55,16 @@ const ui = {
 		auto = auto !== undefined ? auto : true;
 		
 		el = document.createElement(o.tag);
+		if (o.id !== null) el.setAttribute('id', o.id);
 
 		core.util.iterObj(o.attr, function (attr, value) {
 			el.setAttribute(attr, value);
 		});
+
+		o.cls.forEach((cls) => {
+			el.classList.add(cls);
+		});
 		
-		//el.innerHTML = o.content;
 		el.insertAdjacentHTML('afterbegin', o.content);
 
 		if (auto === true) {

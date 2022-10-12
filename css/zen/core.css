@@ -1,0 +1,274 @@
+@import "base.css";
+
+body {
+	width: 100vw;
+	height: 100vh;
+}
+
+#workbench {
+	position: absolute;
+	width: 100vw; height: 100vh;
+	overflow: hidden;
+	-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                          supported by Chrome, Edge, Opera and Firefox */
+}
+
+
+#workbench .workbench-menu {
+	position: absolute;
+	top: 0; left: 0; right: 0;
+	height: 24px;
+	border-bottom: 1px solid #000;
+	display: flex;
+	align-items: center;
+}
+
+
+.workbench-menu {
+	display: flex;
+	cursor: default;
+	
+}
+
+.workbench-menu ul.menu-items {
+	height: 100%;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 0;
+}
+
+.workbench-menu li {
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 18px;
+}
+
+
+.workbench-menu ul.menu-items > li {
+	height: 100%;
+	padding: 0 1em 0 1em;
+	display: flex;
+	position: relative;
+	align-items: center;
+	color: #000;
+}
+
+.workbench-menu ul.menu-items > li ul {
+	border: 1px solid #000;
+	position: absolute;
+	left: 0; top: 23px;
+	width: min-content;
+	min-width: 120px;
+	background-color: white;
+	height: unset;
+	display: none;
+}
+
+.workbench-menu ul.menu-items > li ul hr {
+	width: 100%;
+	margin: 0;
+	height: 1px;
+	border: none;
+	border-bottom: 1px solid #000;
+}
+
+.workbench-menu ul.menu-items > li li {
+	white-space: nowrap;
+	height: 24px;
+}
+
+.workbench-menu:not(.disabled) ul.menu-items > li:hover ul {
+	display: flex;
+}
+
+.workbench-menu > ul.menu-items {
+	flex-direction: row;
+}
+
+.workbench-menu ul.menu-items > li:hover:not(.disabled) {
+	background-color: #000;
+	color: #fff;
+}
+
+.workbench-menu ul.menu-items > li.disabled {
+	color: #aaa;
+}
+
+#workbench .window {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+#workbench .window.list .body {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 4px;
+}
+
+#workbench .window > .header {
+	border-bottom: 1px solid #000;
+	display: flex;
+	align-items: center;
+	cursor: default;
+}
+
+#workbench .window > .toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	height: 20px;
+	padding-right: 2px;
+}
+
+
+#workbench .window > .header .title-bar {
+	flex: 1;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: center;
+}
+
+#workbench .window.maximised {}
+
+#workbench .window.minimised {}
+#workbench .window.minimised > .body {display: none;}
+#workbench .window.minimised > .header .btn.max {display: none;}
+#workbench .window.minimised > .header .btn.min {background-image: url(img/ui/max.png);}
+#workbench .window.minimised > .footer {display: none;}
+
+#workbench .btn-group {
+	display: flex;
+}
+
+#workbench .window > .body {
+	position: relative;
+	flex: 1;
+	overflow: auto;
+}
+
+#workbench .window > .footer {
+	border-top: 1px solid #000;
+	display: flex;
+}
+
+#workbench .window > .footer .status {
+	display: flex;
+	align-items: center;
+	margin-left: 4px;
+	flex: 1;
+}
+
+#workbench .window .btn {
+	width: 16px;
+	height: 16px;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+}
+
+#workbench .window .btn.resize {
+	background-size: 10px;
+	background-position: bottom right;
+	background-image: url(img/ui/resize-handle.png);
+	cursor: nwse-resize;
+}
+
+#workbench .window .btn.max {
+	background-size: 10px;
+	background-image: url(img/ui/max.png);
+}
+
+#workbench .window .btn.min {
+	background-size: 10px;
+	background-image: url(img/ui/min.png);
+}
+
+#workbench .window .btn.close {
+	background-size: 10px;
+	background-image: url(img/ui/close.png);
+}
+
+#workbench .window .btn.add {
+	background-image: url(img/ui/plus.svg);
+}
+
+#workbench .window .btn.edit {
+	background-image: url(img/ui/edit.svg);
+}
+
+#workbench .window .btn.delete {
+	background-image: url(img/ui/delete.svg);
+}
+
+#workbench .icon {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 80px;
+	height: 90px;
+	cursor: pointer;
+}
+
+#workbench .icon .image {
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	background-image: url(img/icon/blank.svg);
+	width: 48px; height: 48px;
+	margin: 8px 8px 2px 8px;
+}
+
+
+#workbench .icon.back .image {
+	background-size: 24px;
+}
+
+
+#workbench .icon.multi .image {
+	background-image: url(img/icon/multi.svg);
+}
+
+#workbench .icon .label {
+	text-align: center;
+	overflow-wrap: anywhere;
+	max-width: 80px;
+	max-height: 32px;
+	overflow: hidden;
+	overflow-y: auto;
+}
+
+#workbench .list .icon {
+	position: unset;
+	gap: 4px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 100%;
+	height: unset;
+}
+
+#workbench .list .icon .image {
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	background-image: url(img/file-icons/classic/blank.svg);
+	width: 16px; height: 16px;
+	margin: 0;
+}
+
+#workbench .list .icon .label {
+	text-align: left;
+	max-width: unset;
+}
