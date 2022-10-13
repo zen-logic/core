@@ -3,28 +3,30 @@ import './core.desktop.js';
 const DRAGLIMIT = 6;
 
 function Window (params) {
-	if (arguments.length > 0) this.init(params);
+	if (arguments.length > 0) {
+		this.pos = {
+			x: 0,
+			y: 0,
+			z: 0
+		};
+
+		this.size = {
+			w: 140,
+			h: 96,
+			minW: 0,
+			minH: 0,
+			maxW: -1,
+			maxH: -1
+		};
+		
+		this.init(params);
+	}
 	return this;
 }
 
 
 Window.prototype = {
 
-	pos: {
-		x: 0,
-		y: 0,
-		z: 0
-	},
-
-	size: {
-		w: 140,
-		h: 96,
-		minW: 0,
-		minH: 0,
-		maxW: -1,
-		maxH: -1
-	},
-	
 	set z (val) {
 		this.pos.z = val;
 		this.el.style.zIndex = val;

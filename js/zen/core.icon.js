@@ -1,25 +1,228 @@
 import './core.ui.js';
 
 const DRAGLIMIT = 6;
+let currentIcon = null;
+
+function selectIcon (icon, e) {
+	currentIcon = icon;
+
+	let rect = icon.el.getBoundingClientRect(),
+		startX = e.touches === undefined ? e.clientX : e.touches[0].clientX,
+		startY = e.touches === undefined ? e.clientY : e.touches[0].clientY,
+		offsetX = startX - rect.left,
+		offsetY = startY - rect.top
+	;
+
+	icon.dragData = {
+		rect: rect,
+		initZ: icon.z,
+		initX: icon.x,
+		initY: icon.y,
+		startX: startX,
+		startY: startY,
+		offsetX: offsetX,
+		offsetY: offsetY,
+		source: icon.parent
+	};
+
+	removeDesktopEvents(); // we only want one set of events assigned at a time
+	desktop.el.addEventListener('mousemove', prepareDrag);
+	desktop.el.addEventListener('mouseup', cancelDrag);
+}
+
+
+function exitWindow (e) {
+	e = e ? e : window.event;
+	var from = e.relatedTarget || e.toElement;
+	if (!from || from.nodeName == "HTML") {
+		endDrag();
+	}
+}
+
+
+function removeDesktopEvents () {
+	desktop.el.removeEventListener('mousemove', drag);
+	desktop.el.removeEventListener('mousemove', prepareDrag);
+	desktop.el.removeEventListener('mouseup', drop);
+	desktop.el.removeEventListener('mouseup', cancelDrag);
+	desktop.el.removeEventListener('mouseout', exitWindow);
+}
+
+
+function prepareDrag (e) {
+
+	if (Math.abs((e.touches === undefined ? e.clientX : e.touches[0].clientX) - currentIcon.dragData.startX) > DRAGLIMIT ||
+		Math.abs((e.touches === undefined ? e.clientY : e.touches[0].clientY) - currentIcon.dragData.startY) > DRAGLIMIT) {
+		let multi = e.ctrlKey || e.shiftKey || e.metaKey;
+		multi = multi || ((desktop.selected.length > 1) && currentIcon.el.classList.contains('selected'));
+		
+		if (multi) {
+			desktop.select(currentIcon, true);
+			currentIcon.el.classList.add('selected');
+			if (desktop.selected.length > 1) {
+				initMultiDrag(e);
+				return;
+			}
+		}
+		
+		// we only get here if not multiple icons selected
+		desktop.select(currentIcon);
+		currentIcon.el.classList.add('selected');
+		initSingleDrag(e);
+
+	}
+}
+
+
+function cancelDrag (e) {
+	removeDesktopEvents();
+};
+
+
+function initSingleDrag (e) {
+	// core.log('init single drag', currentIcon);
+	
+	desktop.el.removeEventListener('mousemove', prepareDrag);
+	desktop.el.addEventListener('mousemove', drag);
+	desktop.el.removeEventListener('mouseup', cancelDrag);
+	desktop.el.addEventListener('mouseup', drop);
+	desktop.el.addEventListener('mouseout', exitWindow);
+		
+	// prevent flash of icon appearing on the
+	// workbench if we are dragging in a window
+	currentIcon.el.style.visibility = 'hidden';
+	desktop.bringToFront(currentIcon);
+	desktop.el.append(currentIcon.el);
+	currentIcon.el.classList.add('dragging');
+}
+
+
+function initMultiDrag (e) {
+	// core.log('multi drag');
+	// pick up all the selected items
+	
+	desktop.el.removeEventListener('mousemove', prepareDrag);
+	desktop.el.addEventListener('mousemove', drag);
+	desktop.el.removeEventListener('mouseup', cancelDrag);
+	desktop.el.addEventListener('mouseup', drop);
+	desktop.el.addEventListener('mouseout', exitWindow);
+	currentIcon.el.classList.add('dragging');
+	desktop.selected.forEach((o) => {
+		o.el.style.visibility = 'hidden';
+		desktop.bringToFront(o);
+		desktop.el.append(o.el);
+	});
+}
+
+
+function drag (e) {
+	// core.log('drag', desktop.selected.length, currentIcon);
+	desktop.selected.forEach((o) => {
+		let x = e.clientX - currentIcon.dragData.offsetX;
+		let y = e.clientY - currentIcon.dragData.offsetY;
+		if (o === currentIcon) {
+			o.x = x;
+			o.y = y;
+		} else {
+			o.x = x - (currentIcon.dragData.initX - o.dragData.initX);
+			o.y = y - (currentIcon.dragData.initY - o.dragData.initY);
+		}
+		o.el.style.visibility = 'visible';
+	});	
+}
+
+
+function drop (e) {
+	if (currentIcon.dragData.source !== null) {
+		let x = e.clientX - currentIcon.dragData.offsetX;
+		let y = e.clientY - currentIcon.dragData.offsetY;
+		currentIcon.el.style.visibility = 'hidden';
+		let target = document.elementFromPoint(e.clientX, e.clientY);
+
+		if (target.dropTarget && (target.dropTarget !== currentIcon.dragData.source)) {
+			// core.log('got new drop target', target.dropTarget);
+
+			// check if the new window/drop target accepts this drop
+			// ...
+
+
+			// yes - ok to perform the drop
+			if (self.dragItems) {
+				self.dragItems.forEach((o) => {
+					o.source.removeItem(o);
+					target.dropTarget.drop(o);
+				});
+				self.arrange();
+			} else {
+				self.source.removeItem(self);
+				target.dropTarget.drop(self);
+				self.el.style.removeProperty('visibility');
+				self.select();
+			}
+		} else {
+			// core.log('same target', currentIcon.dragData.source);
+			desktop.selected.forEach((o) => {
+				if (!target.dropTarget) resetDragged(o);
+				o.dragData.source.drop(o);
+				o.el.style.removeProperty('visibility');
+			});
+		}
+	}
+	
+	endDrag();
+	
+}
+
+
+function endDrag () {
+	removeDesktopEvents();
+
+	desktop.selected.forEach((o) => {
+		o.el.classList.remove('dragging');
+		o.z = o.dragData.initZ;
+		o.el.style.removeProperty('visibility');
+
+		o.dragData = {
+			initZ: o.z,
+			initX: o.x,
+			initY: o.y,
+			source: o.parent
+		};
+		
+	});
+	
+}
+
+
+function resetDragged (o) {
+	o.x = o.dragData.initX;
+	o.y = o.dragData.initY;
+	o.z = o.dragData.initZ;
+}
+
+
 
 function Icon (params) {
-	if (arguments.length > 0) this.init(params);
+	if (arguments.length > 0) {
+		this.pos = {
+			x: 0,
+			y: 0,
+			z: 0
+		};
+
+		this.size = {
+			w: 80,
+			h: 90
+		};
+		
+		this.init(params);
+	};
+	
 	return this;
 }
 
 
 Icon.prototype = {
-
-	pos: {
-		x: 0,
-		y: 0,
-		z: 0
-	},
-
-	size: {
-		w: 80,
-		h: 90
-	},
 	
 	set z (val) {
 		this.pos.z = val;
@@ -31,8 +234,8 @@ Icon.prototype = {
 	},
 
 	set x (val) {
-		let min = this.desktop.minX,
-			max = this.desktop.maxX;
+		let min = desktop.minX,
+			max = desktop.maxX;
 
 		this.pos.x = val;
 
@@ -50,8 +253,8 @@ Icon.prototype = {
 	},
 
 	set y (val) {
-		let min = this.desktop.minY,
-			max = this.desktop.maxY;
+		let min = desktop.minY,
+			max = desktop.maxY;
 		
 		this.pos.y = val;
 
@@ -84,9 +287,9 @@ Icon.prototype = {
 	
 	init: function (params) {
 		core.log('New Icon', params);
+		
 		this.cfg = params;
 		this.parent = params.parent !== undefined ? params.parent : window.desktop;
-		this.desktop = window.desktop;
 		this.id = params.id === undefined ? core.util.createUUID() : params.id;
 		this.data = params.data === undefined ? {} : params.data;
 		this.fixed = params.fixed;
@@ -107,37 +310,31 @@ Icon.prototype = {
 
 		this.label = this.cfg.label;
 		this.image = this.cfg.image;
+
 		this.x = this.cfg.x !== undefined ? this.cfg.x : 0;
 		this.y = this.cfg.y !== undefined ? this.cfg.y : 0;
 		this.z = this.cfg.z !== undefined ? this.cfg.z : 0;
-		// this.snapToGrid();
+
 		this.setupEvents();
 	},
 
 	setupEvents: function () {
-		
-		this.el.addEventListener('mousedown', (e) => {this.startDrag(e);});
+		// this.el.addEventListener('mousedown', (e) => {this.startDrag(e);});
+		this.el.addEventListener('mousedown', (e) => {selectIcon(this, e);});
 		
 		this.el.addEventListener('click', (e) => {
-			if (this.preventClick === true) {
-				this.preventClick = false;
-			} else {
-				let multi = e.ctrlKey || e.shiftKey || e.metaKey;
-				this.select(multi);
-				core.log('click', this.id);
-				if (this.data.click) this.data.click(this);
-				e.stopPropagation();
-			}
+			let multi = e.ctrlKey || e.shiftKey || e.metaKey;
+			this.select(multi);
+			core.log('click', this.id);
+			if (this.data.click) this.data.click(this);
+			if (this.dragData) this.z = this.dragData.initZ;
+			e.stopPropagation();
 		});
 		
 		this.el.addEventListener('dblclick', (e) => {
-			if (this.preventClick === true) {
-				this.preventClick = false;
-			} else {
-				core.log('double click', this.id);
-				if (this.data.dblclick) this.data.dblclick(this);
-				e.stopPropagation();
-			}
+			core.log('double click', this.id);
+			if (this.data.dblclick) this.data.dblclick(this);
+			e.stopPropagation();
 		});
 		
 	},
@@ -150,226 +347,15 @@ Icon.prototype = {
 		} else {
 			// core.log('selected');
 			this.el.classList.add('selected');
-			this.desktop.select(this, multi);
-			this.desktop.bringToFront(this);
+			desktop.select(this, multi);
+			desktop.bringToFront(this);
 		}
 	},
 
 	deselect: function () {
 		this.el.classList.remove('selected');
-		this.desktop.deselect(this);
+		desktop.deselect(this);
 	},
-
-	arrange: function () {
-		if (this.dragItems) {
-			this.dragItems.forEach((o) => {
-				let diffX = o.r.left - this.r.left,
-					diffY = o.r.top - this.r.top;
-				if (o !== this) {
-					o.x = this.x + diffX;
-					o.y = this.y + diffY;
-				}
-			});
-		}
-	},
-	
-	startDrag: function (e) {
-		const self = this;
-		const rect = this.el.getBoundingClientRect();
-		this.startZ = this.z;
-		this.preventClick = false;
-		this.source = null;
-		// multi drag
-		this.dragItems = null;
-		this.startLabel = null;
-
-		this.startX = e.touches === undefined ? e.clientX : e.touches[0].clientX;
-		this.startY = e.touches === undefined ? e.clientY : e.touches[0].clientY;
-		this.offsetX = this.startX - rect.left;
-		this.offsetY = this.startY - rect.top;
-		this.desktop.el.addEventListener('mousemove', prepareDrag);
-		this.desktop.el.addEventListener('mouseup', drop);
-		this.desktop.el.addEventListener('mouseout', exitWindow);
-		this.X = rect.left;
-		this.Y = rect.top;
-
-		// core.log(this, self.x, self.y);
-		core.log(this.label, this.X, this.Y);
-		// core.log(rect.left, rect.top);
-		
-		function prepareDrag (e) {
-
-			core.log(self.desktop.selected.length,
-					 self.el.classList.contains('selected'));
-			
-			if (Math.abs((e.touches === undefined ? e.clientX : e.touches[0].clientX) - self.startX) > DRAGLIMIT ||
-				Math.abs((e.touches === undefined ? e.clientY : e.touches[0].clientY) - self.startY) > DRAGLIMIT) {
-				let multi = e.ctrlKey || e.shiftKey || e.metaKey;
-				multi = multi || ((self.desktop.selected.length > 1) && self.el.classList.contains('selected'));
-				
-				if (multi) {
-					self.desktop.select(self, true);
-					if (self.desktop.selected.length > 1) {
-						initMultiDrag(e);
-						return;
-					}
-				}
-				
-				// we only get here if not multiple icons selected
-				initSingleDrag(e);
-				
-			}
-		}
-
-		function initSingleDrag (e) {
-			self.desktop.deselectAll();
-			self.desktop.el.removeEventListener('mousemove', prepareDrag);
-			self.desktop.el.addEventListener('mousemove', drag);
-			// prevent flash of icon appearing on the
-			// workbench if we are dragging in a window
-			self.el.style.visibility = 'hidden';
-			self.desktop.bringToFront(self);
-			self.source = self.parent;
-			core.log('source', self.source);
-			self.desktop.el.append(self.el);
-			self.el.classList.add('dragging');
-			self.preventClick = true;
-		}
-		
-		
-		function initMultiDrag (e) {
-			// core.log('multi drag');
-			// pick up all the selected items
-			self.dragItems = self.desktop.selected.slice();
-			self.desktop.deselectAll();
-			self.desktop.el.removeEventListener('mousemove', prepareDrag);
-			self.desktop.el.addEventListener('mousemove', drag);
-			self.startLabel = self.label;
-			self.label = self.dragItems.length + ' items';
-			self.el.classList.add('dragging');
-			self.preventClick = true;
-			self.el.classList.add('multi');
-			self.dragItems.forEach((o) => {
-				o.source = o.parent;
-				o.startZ = o.z;
-				o.r = o.el.getBoundingClientRect();
-				o.el.style.visibility = 'hidden';
-				self.desktop.bringToFront(o);
-				self.desktop.el.append(o.el);
-			});
-		}
-
-		
-		function drag (e) {
-			self.x = e.clientX - self.offsetX;
-			self.y = e.clientY - self.offsetY;
-			self.el.style.visibility = 'visible';
-		}
-
-
-		function endDrag (e) {
-			self.desktop.el.removeEventListener('mousemove', drag);
-			self.desktop.el.removeEventListener('mousemove', prepareDrag);
-			self.desktop.el.removeEventListener('mouseup', drop);
-			self.desktop.el.removeEventListener('mouseup', endDrag);
-			self.desktop.el.removeEventListener('mouseout', exitWindow);
-			setTimeout(() => {
-				// self.el.style.visibility = 'visible';
-
-				self.z = self.startZ;
-				self.el.classList.remove('dragging');
-				if (self.dragItems) {
-					self.dragItems.forEach((o) => {
-						o.z = o.startZ;
-						o.el.style.removeProperty('visibility');
-					});
-					self.label = self.startLabel;
-					self.el.classList.remove('multi');
-				}
-
-			}, 0);
-		}
-
-		function drop (e) {
-			endDrag(e);
-			if (self.source !== null) {
-				let x = e.clientX - self.offsetX;
-				let y = e.clientY - self.offsetY;
-				self.el.style.visibility = 'hidden';
-				let target = document.elementFromPoint(e.clientX, e.clientY);
-
-				if (target.dropTarget && (target.dropTarget !== self.source)) {
-					core.log('got new drop target', target.dropTarget);
-
-					// check if the new window/drop target accepts this drop
-					// ...
-
-
-					// yes - ok to perform the drop
-					if (self.dragItems) {
-						self.dragItems.forEach((o) => {
-							o.source.removeItem(o);
-							target.dropTarget.drop(o);
-						});
-						self.arrange();
-					} else {
-						self.source.removeItem(self);
-						target.dropTarget.drop(self);
-						self.el.style.removeProperty('visibility');
-						// self.snapToGrid();
-						self.select();
-					}
-				} else {
-					// core.log('same target', self.source);
-					// core.log(target, self.source.el);
-					if (self.dragItems) {
-						core.log('multiple');
-						self.dragItems.forEach((o) => {
-							self.source.drop(o);
-							o.el.style.removeProperty('visibility');
-							// o.snapToGrid();
-							// if (target !== self.source.el) {
-							// 	o.reset();
-							// }
-						});
-						self.arrange();
-					} else {
-						self.source.drop(self);
-						self.el.style.removeProperty('visibility');
-						if (target !== self.source.el) {
-							self.reset();
-						}
-						// self.snapToGrid();
-						self.select();
-					}
-				}
-			}
-		}
-
-		function exitWindow (e) {
-			e = e ? e : window.event;
-			var from = e.relatedTarget || e.toElement;
-			if (!from || from.nodeName == "HTML") {
-				core.log('exit window');
-				endDrag(e);
-				// self.snapToGrid();
-			}
-		}
-
-	},
-	
-	snapToGrid: function () {
-		this.x(Math.round(this.x() / ICON_GRID_X)  * ICON_GRID_X);
-		this.y(Math.round(this.y() / ICON_GRID_Y)  * ICON_GRID_Y);
-	},
-
-	reset: function () {
-		core.log(this.label);
-		core.log(this.X, this.Y);
-		// this.source.drop(this);
-		this.x = this.X;
-		this.y = this.Y;
-	}
 	
 	
 };

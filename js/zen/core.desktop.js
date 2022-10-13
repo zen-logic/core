@@ -6,15 +6,16 @@ import './core.icon.js';
 
 
 function Desktop (params) {
-	if (arguments.length > 0) this.init(params);
+	if (arguments.length > 0) {
+		this.stack = {};
+		this.selected = [];
+		this.init(params);
+	}
 	return this;
 }
 
 
 Desktop.prototype = {
-
-	stack: {},
-	selected: [],
 
 	get minX () {
 		return 0;
@@ -73,10 +74,10 @@ Desktop.prototype = {
 			}
 			
 			// check it's not already selected
-			for (let idx = 0; idx < this.selected.length; idx++) {
-				if (this.selected[idx] === o) return;
+			if (!this.selected.includes(o)) {
+				this.selected.push(o);
 			}
-			this.selected.push(o);
+			
 		} else {
 			this.deselectAll();
 			this.selected.push(o);

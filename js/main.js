@@ -51,19 +51,22 @@ desktop.menubar.setMenu({
 
 desktop.addItem(
 	new core.wb.Icon({
-		label: 'Test icon 1'
+		label: 'Test icon 1',
+		x: 0
 	})
 );
 
 desktop.addItem(
 	new core.wb.Icon({
-		label: 'Test icon 2'
+		label: 'Test icon 2',
+		x: 80
 	})
 );
 
 desktop.addItem(
 	new core.wb.Icon({
-		label: 'Test icon 3'
+		label: 'Test icon 3',
+		x: 160
 	})
 );
 
