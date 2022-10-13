@@ -5,8 +5,9 @@
     --default: #394253;
     --outline: #777;
 	--shadow: 0px 0px 4px 1px rgba(0,0,0,0.3);
-	--active-window: #cde;
-	--inactive-window: #ddd;
+	--active-window: #e0efff;
+	--inactive-window: #eee;
+	--highlight: rgba(80,140,240,1);
 }
 
 
@@ -153,12 +154,13 @@ body {
 }
 
 #workbench .icon.selected .image {
-	filter: drop-shadow(0 0 4px rgba(80,140,240,1));
+	filter: drop-shadow(0 0 4px var(--highlight));
 }
 
 #workbench .icon.selected .label {
 	padding: 0 4px 0 4px;
-	background-color: #cde;
+	background-color: var(--highlight);
+	color: #fff;
 	border-radius: 2px;
 }
 

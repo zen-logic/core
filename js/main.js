@@ -65,7 +65,7 @@ desktop.addItem(
 
 desktop.addItem(
 	new core.wb.Icon({
-		label: 'Test icon 3',
+		label: 'Test icon 3 with a long label',
 		x: 160
 	})
 );

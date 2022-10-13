@@ -319,20 +319,20 @@ Icon.prototype = {
 	},
 
 	setupEvents: function () {
-		// this.el.addEventListener('mousedown', (e) => {this.startDrag(e);});
+
 		this.el.addEventListener('mousedown', (e) => {selectIcon(this, e);});
 		
 		this.el.addEventListener('click', (e) => {
 			let multi = e.ctrlKey || e.shiftKey || e.metaKey;
 			this.select(multi);
-			core.log('click', this.id);
+			// core.log('click', this.id);
 			if (this.data.click) this.data.click(this);
 			if (this.dragData) this.z = this.dragData.initZ;
 			e.stopPropagation();
 		});
 		
 		this.el.addEventListener('dblclick', (e) => {
-			core.log('double click', this.id);
+			// core.log('double click', this.id);
 			if (this.data.dblclick) this.data.dblclick(this);
 			e.stopPropagation();
 		});
