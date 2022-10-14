@@ -272,3 +272,10 @@ body {
 	text-align: left;
 	max-width: unset;
 }
+
+
+#workbench>.rubberband {
+	position: absolute;
+	outline: 1px solid #fff;
+	background-color: rgba(0,0,0,.2);
+}

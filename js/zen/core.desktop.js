@@ -3,10 +3,13 @@ import './core.ui.js';
 import './core.menubar.js';
 import './core.window.js';
 import './core.icon.js';
+import {rubberband} from './mixin.rubberband.js';
 
 
 function Desktop (params) {
 	if (arguments.length > 0) {
+		Object.assign(this, rubberband);
+		this.rubberband = null;
 		this.stack = {};
 		this.selected = [];
 		this.init(params);
@@ -57,9 +60,10 @@ Desktop.prototype = {
 			parent: this
 		});
 
-		this.el.addEventListener('click', (e) => {
-			if (e.target === this.el) {
+		this.el.addEventListener('mousedown', (e) => {
+			if (e.currentTarget === e.target) {
 				this.deselectAll();
+				this.getRubberBand(e);
 			}
 		});
 		
@@ -150,6 +154,7 @@ Desktop.prototype = {
 		this.stack[o.id] = o;
 		o.parent = this;
 	},
+
 
 	
 };

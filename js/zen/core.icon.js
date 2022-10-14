@@ -214,7 +214,7 @@ function Icon (params) {
 			w: 80,
 			h: 90
 		};
-		
+
 		this.init(params);
 	};
 	
@@ -293,8 +293,16 @@ Icon.prototype = {
 		this.id = params.id === undefined ? core.util.createUUID() : params.id;
 		this.data = params.data === undefined ? {} : params.data;
 		this.fixed = params.fixed;
-
 		this.render();
+
+		// provide initial drag info
+		this.dragData = {
+			initZ: this.z,
+			initX: this.x,
+			initY: this.y,
+			source: this.parent
+		};
+		
 		return this;
 	},
 
@@ -324,15 +332,16 @@ Icon.prototype = {
 		
 		this.el.addEventListener('click', (e) => {
 			let multi = e.ctrlKey || e.shiftKey || e.metaKey;
+			if (!multi) desktop.deselectAll();
 			this.select(multi);
-			// core.log('click', this.id);
+			core.log('click', this.id);
 			if (this.data.click) this.data.click(this);
 			if (this.dragData) this.z = this.dragData.initZ;
 			e.stopPropagation();
 		});
 		
 		this.el.addEventListener('dblclick', (e) => {
-			// core.log('double click', this.id);
+			core.log('double click', this.id);
 			if (this.data.dblclick) this.data.dblclick(this);
 			e.stopPropagation();
 		});
