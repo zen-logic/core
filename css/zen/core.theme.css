@@ -54,7 +54,6 @@ body {
 	background-color: #fff;
 	box-shadow: var(--shadow);
 	clip-path: inset(0px -5px -5px -5px);
-	z-index: 10000;
 	color: var(--default);
 }
 

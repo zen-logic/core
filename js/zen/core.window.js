@@ -18,7 +18,7 @@ function Window (params) {
 			maxW: -1,
 			maxH: -1
 		};
-		
+	
 		this.init(params);
 	}
 	return this;
@@ -98,7 +98,7 @@ Window.prototype = {
 	},
 	
 	get w () {
-		return this.size.w;
+		return this.el.getBoundingClientRect().width;
 	},
 	
 	set h (val) {
@@ -113,7 +113,7 @@ Window.prototype = {
 	},
 	
 	get h () {
-		return this.size.h;
+		return this.el.getBoundingClientRect().height;
 	},
 
 	set title (val) {

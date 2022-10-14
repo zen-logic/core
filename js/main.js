@@ -1,4 +1,5 @@
 import './zen/core.desktop.js';
+import './zen/view.icons.js';
 
 core.log('application loaded');
 
@@ -70,15 +71,41 @@ desktop.addItem(
 	})
 );
 
-desktop.addItem(
+const win = desktop.addItem(
 	new core.wb.Window({
 		parent: desktop,
 
-		title: 'Zen Workbench',
+		title: 'Application Window',
 		
 		pos: {
 			x: 'centre',
 			y: 'centre'
+		},
+
+		size: {
+			w: 320,
+			h: 240,
+			minW: 200,
+			minH: 100,
+			maxW: 600
+		}
+	})
+);
+
+new core.wb.IconView({
+	parent: win,
+	container: win.body
+});
+
+desktop.addItem(
+	new core.wb.Window({
+		parent: desktop,
+
+		title: 'Application Window 2',
+		
+		pos: {
+			x: 100,
+			y: 200
 		},
 
 		size: {

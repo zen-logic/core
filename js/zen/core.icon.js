@@ -35,7 +35,11 @@ function exitWindow (e) {
 	e = e ? e : window.event;
 	var from = e.relatedTarget || e.toElement;
 	if (!from || from.nodeName == "HTML") {
-		endDrag();
+		removeDesktopEvents();
+		// currentIcon.parent.selected.forEach((o) => {
+		// 	reset(o);
+		// });
+		currentIcon.parent.selected.forEach(reset);
 	}
 }
 
@@ -54,19 +58,19 @@ function prepareDrag (e) {
 	if (Math.abs((e.touches === undefined ? e.clientX : e.touches[0].clientX) - currentIcon.dragData.startX) > DRAGLIMIT ||
 		Math.abs((e.touches === undefined ? e.clientY : e.touches[0].clientY) - currentIcon.dragData.startY) > DRAGLIMIT) {
 		let multi = e.ctrlKey || e.shiftKey || e.metaKey;
-		multi = multi || ((desktop.selected.length > 1) && currentIcon.el.classList.contains('selected'));
+		multi = multi || ((currentIcon.parent.selected.length > 1) && currentIcon.el.classList.contains('selected'));
 		
 		if (multi) {
-			desktop.select(currentIcon, true);
+			currentIcon.parent.select(currentIcon, true);
 			currentIcon.el.classList.add('selected');
-			if (desktop.selected.length > 1) {
+			if (currentIcon.parent.selected.length > 1) {
 				initMultiDrag(e);
 				return;
 			}
 		}
 		
 		// we only get here if not multiple icons selected
-		desktop.select(currentIcon);
+		currentIcon.parent.select(currentIcon);
 		currentIcon.el.classList.add('selected');
 		initSingleDrag(e);
 
@@ -91,9 +95,9 @@ function initSingleDrag (e) {
 	// prevent flash of icon appearing on the
 	// workbench if we are dragging in a window
 	currentIcon.el.style.visibility = 'hidden';
+	currentIcon.el.classList.add('dragging');
 	desktop.bringToFront(currentIcon);
 	desktop.el.append(currentIcon.el);
-	currentIcon.el.classList.add('dragging');
 }
 
 
@@ -107,7 +111,7 @@ function initMultiDrag (e) {
 	desktop.el.addEventListener('mouseup', drop);
 	desktop.el.addEventListener('mouseout', exitWindow);
 	currentIcon.el.classList.add('dragging');
-	desktop.selected.forEach((o) => {
+	currentIcon.parent.selected.forEach((o) => {
 		o.el.style.visibility = 'hidden';
 		desktop.bringToFront(o);
 		desktop.el.append(o.el);
@@ -117,7 +121,7 @@ function initMultiDrag (e) {
 
 function drag (e) {
 	// core.log('drag', desktop.selected.length, currentIcon);
-	desktop.selected.forEach((o) => {
+	currentIcon.parent.selected.forEach((o) => {
 		let x = e.clientX - currentIcon.dragData.offsetX;
 		let y = e.clientY - currentIcon.dragData.offsetY;
 		if (o === currentIcon) {
@@ -147,50 +151,36 @@ function drop (e) {
 
 
 			// yes - ok to perform the drop
-			if (self.dragItems) {
-				self.dragItems.forEach((o) => {
-					o.source.removeItem(o);
-					target.dropTarget.drop(o);
-				});
-				self.arrange();
-			} else {
-				self.source.removeItem(self);
-				target.dropTarget.drop(self);
-				self.el.style.removeProperty('visibility');
-				self.select();
-			}
+			currentIcon.parent.selected.forEach((o) => {
+				o.dragData.source.removeItem(o);
+				target.dropTarget.drop(o);
+				reset(o);
+			});
+			
 		} else {
 			// core.log('same target', currentIcon.dragData.source);
-			desktop.selected.forEach((o) => {
+			currentIcon.parent.selected.forEach((o) => {
 				if (!target.dropTarget) resetDragged(o);
 				o.dragData.source.drop(o);
-				o.el.style.removeProperty('visibility');
+				reset(o);
 			});
 		}
 	}
 	
-	endDrag();
+	removeDesktopEvents();
 	
 }
 
-
-function endDrag () {
-	removeDesktopEvents();
-
-	desktop.selected.forEach((o) => {
-		o.el.classList.remove('dragging');
-		o.z = o.dragData.initZ;
-		o.el.style.removeProperty('visibility');
-
-		o.dragData = {
-			initZ: o.z,
-			initX: o.x,
-			initY: o.y,
-			source: o.parent
-		};
-		
-	});
-	
+function reset (o) {
+	o.el.classList.remove('dragging');
+	o.z = o.dragData.initZ;
+	o.el.style.removeProperty('visibility');
+	o.dragData = {
+		initZ: o.z,
+		initX: o.x,
+		initY: o.y,
+		source: o.parent
+	};
 }
 
 
@@ -234,8 +224,8 @@ Icon.prototype = {
 	},
 
 	set x (val) {
-		let min = desktop.minX,
-			max = desktop.maxX;
+		let min = this.parent.minX || 0,
+			max = this.parent.maxX;
 
 		this.pos.x = val;
 
@@ -253,8 +243,8 @@ Icon.prototype = {
 	},
 
 	set y (val) {
-		let min = desktop.minY,
-			max = desktop.maxY;
+		let min = this.parent.minY || 0,
+			max = this.parent.maxY;
 		
 		this.pos.y = val;
 
@@ -332,7 +322,7 @@ Icon.prototype = {
 		
 		this.el.addEventListener('click', (e) => {
 			let multi = e.ctrlKey || e.shiftKey || e.metaKey;
-			if (!multi) desktop.deselectAll();
+			if (!multi) this.parent.deselectAll();
 			this.select(multi);
 			core.log('click', this.id);
 			if (this.data.click) this.data.click(this);
@@ -356,14 +346,14 @@ Icon.prototype = {
 		} else {
 			// core.log('selected');
 			this.el.classList.add('selected');
-			desktop.select(this, multi);
-			desktop.bringToFront(this);
+			this.parent.select(this, multi);
+			this.parent.bringToFront(this);
 		}
 	},
 
 	deselect: function () {
 		this.el.classList.remove('selected');
-		desktop.deselect(this);
+		this.parent.deselect(this);
 	},
 	
 	

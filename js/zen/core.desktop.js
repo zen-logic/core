@@ -51,7 +51,7 @@ Desktop.prototype = {
 	
 	render: function () {
 		this.el = core.ui.createElement({
-			attr: {id: 'workbench'}
+			id: 'workbench'
 		});
 
 		this.el.dropTarget = this;
@@ -113,7 +113,7 @@ Desktop.prototype = {
 	},
 
 
-	getTopWindow: function () {
+	getTop: function () {
 		let top = -1, o;
 		for (const item in this.stack) {
 			if (this.stack[item].z > top) {
@@ -126,7 +126,7 @@ Desktop.prototype = {
 
 	
 	bringToFront: function (o) {
-		let top = this.getTopWindow();
+		let top = this.getTop();
 		if (top) {
 			o.z = top.z + 1;
 		}
@@ -141,6 +141,7 @@ Desktop.prototype = {
 	addItem: function (o) {
 		this.stack[o.id] = o;
 		o.parent = this;
+		return o;
 	},
 
 	
