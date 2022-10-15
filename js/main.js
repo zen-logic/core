@@ -112,11 +112,8 @@ desktop.addItem(
 			w: 320,
 			h: 240,
 			minW: 200,
-			minH: 100,
-			maxW: 600
+			minH: 100
 		}
 	})
 );
 
-
-// window.desktop = desktop;

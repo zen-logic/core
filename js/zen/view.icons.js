@@ -1,8 +1,11 @@
 import './core.ui.js';
+import {rubberband} from './mixin.rubberband.js';
 
 
 function IconView (params) {
 	if (arguments.length > 0) {
+		Object.assign(this, rubberband);
+		this.rubberband = null;
 		this.stack = {};
 		this.selected = [];
 		this.init(params);
@@ -16,6 +19,7 @@ IconView.prototype = {
 	init: function (params) {
 		core.log('New IconView', params);
 		this.cfg = params;
+		this.id = params.id === undefined ? core.util.createUUID() : params.id;
 		this.render();
 		return this;
 	},
@@ -26,9 +30,34 @@ IconView.prototype = {
 			cls: ['iconview']
 		});
 
+		this.el.addEventListener('click', (e) => {
+			if (this.selected.length > 0) {
+				e.stopPropagation();
+			}
+		});
+		
+		this.el.addEventListener('mousedown', (e) => {
+			if (e.currentTarget === e.target) {
+				this.deselectAll();
+				core.notify('deselect-all', {source: this.id});
+				this.getRubberBand(e);
+			}
+		});
+
 		this.el.dropTarget = this;
+
+		core.observe('deselect-all', this.id, (params) => {
+			if (params.source !== this.id) {
+				this.deselectAll();
+			}
+		});
+		
 	},
 
+	cleanup: function () {
+		core.removeObserver('deselect-all', this.id);
+	},
+	
 	drop: function (o) {
 		let rect = this.el.getBoundingClientRect();
 		this.el.append(o.el);
@@ -36,7 +65,6 @@ IconView.prototype = {
 		o.parent = this;
 		o.x = o.x - rect.x;
 		o.y = o.y - rect.y;
-		o.deselect();
 	},
 
 	getTop: function () {
@@ -50,7 +78,6 @@ IconView.prototype = {
 		return o;
 	},
 
-	
 	bringToFront: function (o) {
 		let top = this.getTop();
 		if (top) {
@@ -58,21 +85,22 @@ IconView.prototype = {
 		}
 	},
 	
-
-	
 	select: function (o, multi) {
 		if (multi === true) {
+			// core.log('select multi');
 			// check it's not already selected
 			if (!this.selected.includes(o)) {
 				this.selected.push(o);
 			}
 			
 		} else {
+			// core.log('select single');
 			this.deselectAll();
+			core.notify('deselect-all', {source: this.id});
+			// o.el.classList.add('selected');
 			this.selected.push(o);
 		}
 	},
-
 	
 	deselect: function (o) {
 		for (let idx = 0; idx < this.selected.length; idx++) {
@@ -82,7 +110,6 @@ IconView.prototype = {
 			}
 		}
 	},
-
 	
 	deselectAll: function () {
 		while (this.selected.length > 0) {
@@ -90,20 +117,17 @@ IconView.prototype = {
 			o.deselect();
 		}
 	},
-
 	
 	remove: function (o) {
 		o.el.remove();
 		delete this.stack[o.id];
 	},
 
-
 	addItem: function (o) {
 		this.stack[o.id] = o;
 		o.parent = this;
 		return o;
 	},
-
 	
 	removeItem: function (o) {
 		delete this.stack[o.id];

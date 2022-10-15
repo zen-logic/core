@@ -276,7 +276,8 @@ body {
 }
 
 
-#workbench>.rubberband {
+#workbench>.rubberband,
+#workbench .iconview>.rubberband {
 	position: absolute;
 	outline: 1px solid #fff;
 	background-color: rgba(0,0,0,.2);
@@ -285,4 +286,10 @@ body {
 .window .iconview {
 	position: absolute;
 	width: 100%; height: 100%;
+	overflow: auto;
+}
+
+
+#workbench .window > .body:has(.iconview) {
+	overflow: unset;
 }

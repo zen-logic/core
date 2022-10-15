@@ -6,6 +6,11 @@ import './core.icon.js';
 import {rubberband} from './mixin.rubberband.js';
 
 
+window.addEventListener('contextmenu', (e) => {
+	e.preventDefault();
+});
+
+
 function Desktop (params) {
 	if (arguments.length > 0) {
 		Object.assign(this, rubberband);
@@ -42,12 +47,23 @@ Desktop.prototype = {
 	
 	init: function (params) {
 		core.log('New Desktop', params);
+		this.id = 'workbench';
 		this.cfg = params;
 		this.render();
 		window.desktop = this;
+
+		core.observe('deselect-all', this.id, (params) => {
+			if (params.source !== this.id) {
+				this.deselectAll();
+			}
+		});
+
 		return this;
 	},
 
+	cleanup: function () {
+		core.removeObserver('deselect-all', this.id);
+	},
 	
 	render: function () {
 		this.el = core.ui.createElement({
@@ -63,6 +79,7 @@ Desktop.prototype = {
 		this.el.addEventListener('mousedown', (e) => {
 			if (e.currentTarget === e.target) {
 				this.deselectAll();
+				core.notify('deselect-all', {source: this.id});
 				this.getRubberBand(e);
 			}
 		});
@@ -72,6 +89,7 @@ Desktop.prototype = {
 	
 
 	select: function (o, multi) {
+		core.log(o, multi);
 		if (multi === true) {
 			if (this.selected[0] instanceof core.wb.Window) {
 				this.selected[0].deselect();
@@ -84,6 +102,8 @@ Desktop.prototype = {
 			
 		} else {
 			this.deselectAll();
+			core.notify('deselect-all', {source: this.id});
+			// o.el.classList.add('selected');
 			this.selected.push(o);
 		}
 	},

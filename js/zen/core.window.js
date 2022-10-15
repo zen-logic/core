@@ -249,10 +249,6 @@ Window.prototype = {
 				}
 			});
 		}
-
-		// if (this.body) {
-		// 	this.body.dropTarget = this;
-		// }
 		
 	},
 

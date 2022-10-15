@@ -152,6 +152,7 @@ function drop (e) {
 
 			// yes - ok to perform the drop
 			currentIcon.parent.selected.forEach((o) => {
+				const multi = currentIcon.parent.selected.length > 1;
 				o.dragData.source.removeItem(o);
 				target.dropTarget.drop(o);
 				reset(o);
@@ -185,8 +186,9 @@ function reset (o) {
 
 
 function resetDragged (o) {
-	o.x = o.dragData.initX;
-	o.y = o.dragData.initY;
+	const rect = o.parent.el.getBoundingClientRect();
+	o.x = o.dragData.initX + rect.left;
+	o.y = o.dragData.initY + rect.top;
 	o.z = o.dragData.initZ;
 }
 
@@ -339,7 +341,7 @@ Icon.prototype = {
 	},
 
 	select: function (multi) {
-		// core.log('select');
+		// core.log('select', multi);
 		if (this.el.classList.contains('selected')) {
 			// core.log('deselected');
 			this.deselect();
