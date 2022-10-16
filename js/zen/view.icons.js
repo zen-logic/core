@@ -18,8 +18,10 @@ IconView.prototype = {
 
 	init: function (params) {
 		core.log('New IconView', params);
+		this.parent = params.parent;
 		this.cfg = params;
 		this.id = params.id === undefined ? core.util.createUUID() : params.id;
+		this.parent.addView(this);
 		this.render();
 		return this;
 	},

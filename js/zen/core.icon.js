@@ -264,6 +264,16 @@ Icon.prototype = {
 	},
 
 
+	get r () {
+		return {
+			top: this.y,
+			bottom: this.y + this.size.h,
+			left: this.x,
+			right: this.x + this.size.w
+		};
+	},
+
+	
 	set label (val) {
 		if (val) this.el.querySelector('.label').innerText = val;
 	},

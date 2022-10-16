@@ -4,6 +4,8 @@ const DRAGLIMIT = 6;
 
 function Window (params) {
 	if (arguments.length > 0) {
+		this.views = [];
+		
 		this.pos = {
 			x: 0,
 			y: 0,
@@ -137,6 +139,23 @@ Window.prototype = {
 		this.render();
 		return this;
 	},
+
+
+	addView: function (view) {
+		if (!this.views.includes(view)) {
+			this.views.push(view);
+		}
+	},
+
+
+	close: function () {
+		this.views.forEach((view) => {
+			view.cleanup();
+			view.el.remove();
+		});
+		this.desktop.remove(this);
+	},
+	
 	
 	render: function () {
 		this.el = core.ui.createElement({
@@ -222,7 +241,7 @@ Window.prototype = {
 				if (this.preventClick === true) {
 					this.preventClick = false;
 				} else {
-					this.desktop.remove(this);
+					this.close();
 					e.stopPropagation();
 				}
 			});
@@ -363,7 +382,6 @@ Window.prototype = {
 			self.desktop.el.removeEventListener('mousemove', resize);
 			self.desktop.el.removeEventListener('mouseup', endResize);
 			self.desktop.el.removeEventListener('mouseout', exitWindow);
-			// self.cleanup();
 		}
 
 		function exitWindow (e) {

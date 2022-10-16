@@ -118,7 +118,7 @@ let core = {
 	},
 	
 	notify: function (queue, params) {
-		core.log('NOTIFY:', queue, params);
+		// core.log('NOTIFY:', queue, params);
 		if (core.observers[queue] !== undefined) {
 			for (let [id, callback] of Object.entries(core.observers[queue])) {
 				// we don't need the id

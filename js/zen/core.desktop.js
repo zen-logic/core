@@ -44,6 +44,17 @@ Desktop.prototype = {
 		return this.el.getBoundingClientRect().height;
 	},
 
+
+	get icons () {
+		const icons = [];
+		for (const item in this.stack) {
+			if (this.stack[item] instanceof core.wb.Icon) {
+				icons.push(this.stack[item]);
+			}
+		}
+		return icons;
+	},
+
 	
 	init: function (params) {
 		core.log('New Desktop', params);
@@ -63,6 +74,13 @@ Desktop.prototype = {
 
 	cleanup: function () {
 		core.removeObserver('deselect-all', this.id);
+
+		for (const item in this.stack) {
+			if (this.stack[item] instanceof core.wb.Window) {
+				this.stack[item].close();
+			}
+		}
+		
 	},
 	
 	render: function () {
@@ -86,10 +104,7 @@ Desktop.prototype = {
 		
 	},
 
-	
-
 	select: function (o, multi) {
-		core.log(o, multi);
 		if (multi === true) {
 			if (this.selected[0] instanceof core.wb.Window) {
 				this.selected[0].deselect();
@@ -107,7 +122,6 @@ Desktop.prototype = {
 			this.selected.push(o);
 		}
 	},
-
 	
 	deselect: function (o) {
 		for (let idx = 0; idx < this.selected.length; idx++) {
@@ -117,7 +131,6 @@ Desktop.prototype = {
 			}
 		}
 	},
-
 	
 	deselectAll: function () {
 		while (this.selected.length > 0) {
@@ -125,13 +138,11 @@ Desktop.prototype = {
 			o.deselect();
 		}
 	},
-
 	
 	remove: function (o) {
 		o.el.remove();
 		delete this.stack[o.id];
 	},
-
 
 	getTop: function () {
 		let top = -1, o;
@@ -143,7 +154,6 @@ Desktop.prototype = {
 		}
 		return o;
 	},
-
 	
 	bringToFront: function (o) {
 		let top = this.getTop();
@@ -151,24 +161,20 @@ Desktop.prototype = {
 			o.z = top.z + 1;
 		}
 	},
-	
 
 	getItem: function (id) {
 		return this.stack[id];
 	},
-
 	
 	addItem: function (o) {
 		this.stack[o.id] = o;
 		o.parent = this;
 		return o;
 	},
-
 	
 	removeItem: function (o) {
 		delete this.stack[o.id];
 	},
-	
 	
 	drop: function (o) {
 		this.el.append(o.el);
@@ -176,7 +182,24 @@ Desktop.prototype = {
 		o.parent = this;
 	},
 
+	arrangeIcons: function () {
+		const icons = this.icons.slice();
 
+		// get the first icon with lowest top, left - this is our fixed point
+
+		
+
+		
+		// this.icons.forEach((i1) => {
+		// 	this.icons.forEach((i2) => {
+		// 		if (i1 !== i2) {
+		// 			if (core.util.rectsIntersect(i1.r, i2.r)) {
+		// 				i2.x = i1.x + i1.size.w;
+		// 			}
+		// 		}
+		// 	});
+		// });
+	}
 	
 };
 
