@@ -51,8 +51,14 @@ desktop.menubar.setMenu({
 
 desktop.addItem(
 	new core.wb.Icon({
+		image: 'css/zen/img/icon/enso.png',
 		label: 'Test icon 1',
-		x: 0
+		x: 0,
+		data: {
+			dblclick: (o) => {
+				alert(o.label);
+			}
+		}
 	})
 );
 
