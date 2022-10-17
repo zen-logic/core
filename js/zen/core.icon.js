@@ -4,6 +4,8 @@ const DRAGLIMIT = 6;
 let currentIcon = null;
 
 function selectIcon (icon, e) {
+	if (icon.fixed === true) return;
+
 	currentIcon = icon;
 
 	let rect = icon.el.getBoundingClientRect(),

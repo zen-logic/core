@@ -72,13 +72,13 @@ MenuBar.prototype = {
 			if (item.action) {
 				menuItem.addEventListener('click', (e) => {
 					// disable the menu bar (closes the menu)
-					this.config.view.classList.add('disabled');
+					this.el.classList.add('disabled');
 					item.action(e);
 
 					// re-enable the menu bar
-					app.desktop.el.addEventListener('mousemove', function enable () {
-						app.desktop.el.removeEventListener('mousemove', enable);
-						self.config.view.classList.remove('disabled');
+					desktop.el.addEventListener('mousemove', function enable () {
+						desktop.el.removeEventListener('mousemove', enable);
+						self.el.classList.remove('disabled');
 					});
 					
 				});

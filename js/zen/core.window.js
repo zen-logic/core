@@ -218,7 +218,13 @@ Window.prototype = {
 			}
 		}
 		
-		this.body = core.ui.createElement({parent: this.el, cls: ['body']});
+		this.body = core.ui.createElement({
+			parent: this.el,
+			cls: ['body'],
+			content: this.cfg.content
+		});
+
+		
 		if (this.features.includes('status')) {
 			this.footer = core.ui.createElement({parent: this.el, cls: ['footer']});
 			core.ui.createElement({parent: this.footer, cls: ['status']});

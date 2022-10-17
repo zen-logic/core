@@ -175,6 +175,10 @@ Desktop.prototype = {
 	removeItem: function (o) {
 		delete this.stack[o.id];
 	},
+
+	hasItem: function (id) {
+		return this.stack[id] !== undefined;
+	},
 	
 	drop: function (o) {
 		this.el.append(o.el);
