@@ -49,7 +49,6 @@ desktop.menubar.setMenu({
 	]
 });
 
-
 desktop.addItem(
 	new core.wb.Icon({
 		label: 'Test icon 1',
@@ -74,21 +73,9 @@ desktop.addItem(
 const win = desktop.addItem(
 	new core.wb.Window({
 		parent: desktop,
-
 		title: 'Application Window',
-		
-		pos: {
-			x: 'centre',
-			y: 'centre'
-		},
-
-		size: {
-			w: 320,
-			h: 240,
-			minW: 200,
-			minH: 100,
-			maxW: 600
-		}
+		pos: {x: 100, y: 200},
+		size: {w: 320, h: 240, minW: 200, minH: 100, maxW: 600}
 	})
 );
 
@@ -100,20 +87,9 @@ new core.wb.IconView({
 desktop.addItem(
 	new core.wb.Window({
 		parent: desktop,
-
-		title: 'Application Window 2',
-		
-		pos: {
-			x: 100,
-			y: 200
-		},
-
-		size: {
-			w: 320,
-			h: 240,
-			minW: 200,
-			minH: 100
-		}
+		features: ['close'],
+		pos: {x: 'centre', y: 'centre'},
+		size: {w: 320, h: 240, minW: 200, minH: 100}
 	})
 );
 

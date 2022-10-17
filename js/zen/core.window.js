@@ -130,23 +130,22 @@ Window.prototype = {
 		this.cfg = params;
 		this.desktop = window.desktop;
 		this.id = params.id === undefined ? core.util.createUUID() : params.id;
-
 		this.size.minW = params.size.minW !== undefined ? params.size.minW : this.size.minW;
 		this.size.minH = params.size.minH !== undefined ? params.size.minH : this.size.minH;
 		this.size.maxW = params.size.maxW !== undefined ? params.size.maxW : this.size.maxW;
 		this.size.maxH = params.size.maxH !== undefined ? params.size.maxH : this.size.maxH;
-		
+		this.features = params.features !== undefined ? params.features : [
+			'title', 'status', 'max', 'min', 'resize', 'close'
+		];
 		this.render();
 		return this;
 	},
-
 
 	addView: function (view) {
 		if (!this.views.includes(view)) {
 			this.views.push(view);
 		}
 	},
-
 
 	close: function () {
 		this.views.forEach((view) => {
@@ -156,45 +155,80 @@ Window.prototype = {
 		this.desktop.remove(this);
 	},
 	
-	
 	render: function () {
-		this.el = core.ui.createElement({
-			id: this.id,
-			parent: this.desktop.el,
-			cls: ['window'],
-			content: `
-			 	<div class="header">
-			 		<div class="btn close"></div>
-			 		<div class="title-bar"></div>
-			 		<div class="btn-group">
-			 			<div class="btn min"></div>
-			 			<div class="btn max"></div>
-			 		</div>
-			 	</div>
-			 	
-			 	<div class="body">
-			 
-			 	</div>
-			 	
-			 	<div class="footer">
-			 		<div class="status"></div>
-			 		<div class="btn resize"></div>
-			 	</div>`
-		});
+		this.el = core.ui.createElement({id: this.id, parent: this.desktop.el, cls: ['window']});
+		if (this.features.includes('title')) {
 
-		this.header = this.el.querySelector('.header');
-		this.resizeHandle = this.el.querySelector('.btn.resize');
-		this.closeButton = this.el.querySelector('.btn.close');
-		this.minButton = this.el.querySelector('.btn.min');
-		this.maxButton = this.el.querySelector('.btn.max');
-		this.body = this.el.querySelector('.body');
-		this.footer = this.el.querySelector('.footer');
+			this.el.addEventListener('click', (e) => {
+				this.select();
+			});
+			
+			this.header = core.ui.createElement({parent: this.el, cls: ['header']});
+			this.header.addEventListener('mousedown', (e) => {this.startDrag(e);});
+
+			if (this.features.includes('close')) {
+				this.closeButton = core.ui.createElement({parent: this.header, cls: ['btn', 'close']});
+				this.closeButton.addEventListener('click', (e) => {
+					if (this.preventClick === true) {
+						this.preventClick = false;
+					} else {
+						this.close();
+						e.stopPropagation();
+					}
+				});
+			}
+			core.ui.createElement({parent: this.header, cls: ['title-bar']});
+			
+			if (this.features.includes('min') || this.features.includes('max')) {
+				const group = core.ui.createElement({parent: this.header, cls: ['btn-group']});
+				if (this.features.includes('min')) {
+					this.minButton = core.ui.createElement({parent: group, cls: ['btn', 'min']});
+					this.minButton.addEventListener('click', (e) => {
+						if (this.preventClick === true) {
+							this.preventClick = false;
+						} else {
+							this.minimise();
+							e.stopPropagation();
+						}
+					});
+				}
+				if (this.features.includes('max')) {
+					this.maxButton = core.ui.createElement({parent: group, cls: ['btn', 'max']});
+					this.maxButton.addEventListener('click', (e) => {
+						if (this.preventClick === true) {
+							this.preventClick = false;
+						} else {
+							this.maximise();
+							e.stopPropagation();
+						}
+					});
+				}
+			}
+		} else {
+			this.el.addEventListener('mousedown', (e) => {this.startDrag(e);});
+			if (this.features.includes('close')) {
+				this.el.addEventListener('click', (e) => {
+					if (this.preventClick === true) {
+						this.preventClick = false;
+					} else {
+						this.close();
+						e.stopPropagation();
+					}
+				});
+			}
+		}
+		
+		this.body = core.ui.createElement({parent: this.el, cls: ['body']});
+		if (this.features.includes('status')) {
+			this.footer = core.ui.createElement({parent: this.el, cls: ['footer']});
+			core.ui.createElement({parent: this.footer, cls: ['status']});
+			if (this.features.includes('resize')) {
+				this.resizeHandle = core.ui.createElement({parent: this.footer, cls: ['btn', 'resize']});
+				this.resizeHandle.addEventListener('mousedown', (e) => {this.startResize(e);});
+			}
+		}
 		
 		this.title = this.cfg.title;
-
-		this.el.addEventListener('click', (e) => {
-			this.select();
-		});
 		
 		if (this.cfg.size) {
 			let s = this.cfg.size;
@@ -216,7 +250,6 @@ Window.prototype = {
 			this.y = 'centre';
 		}
 
-		this.setupEvents();
 		this.select();
 	},
 
@@ -231,44 +264,6 @@ Window.prototype = {
 	deselect: function () {
 		this.el.classList.remove('active');
 		this.desktop.deselect(this);
-	},
-
-	setupEvents: function () {
-		if (this.header) this.header.addEventListener('mousedown', (e) => {this.startDrag(e);});
-		if (this.resizeHandle) this.resizeHandle.addEventListener('mousedown', (e) => {this.startResize(e);});
-		if (this.closeButton) {
-			this.closeButton.addEventListener('click', (e) => {
-				if (this.preventClick === true) {
-					this.preventClick = false;
-				} else {
-					this.close();
-					e.stopPropagation();
-				}
-			});
-		}
-
-		if (this.minButton) {
-			this.minButton.addEventListener('click', (e) => {
-				if (this.preventClick === true) {
-					this.preventClick = false;
-				} else {
-					this.minimise();
-					e.stopPropagation();
-				}
-			});
-		}
-
-		if (this.maxButton) {
-			this.maxButton.addEventListener('click', (e) => {
-				if (this.preventClick === true) {
-					this.preventClick = false;
-				} else {
-					this.maximise();
-					e.stopPropagation();
-				}
-			});
-		}
-		
 	},
 
 	saveState: function () {
