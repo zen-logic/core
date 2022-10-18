@@ -243,26 +243,8 @@ Window.prototype = {
 		}
 		
 		this.title = this.cfg.title;
-		
-		if (this.cfg.size) {
-			let s = this.cfg.size;
-			this.w = s.w !== undefined ? s.w : this.size.w;
-			this.h = s.h !== undefined ? s.h : this.size.h;
-		} else {
-			// auto size - use defaults
-			this.w = this.size.w;
-			this.h = this.size.h;
-		}
 
-		if (this.cfg.pos) {
-			let p = this.cfg.pos;
-			this.x = p.x !== undefined ? p.x : this.pos.x;
-			this.y = p.y !== undefined ? p.y : this.pos.y;
-		} else {
-			// auto position - centre on desktop
-			this.x = 'centre';
-			this.y = 'centre';
-		}
+		this.desktop.autoWindowPos(this);
 
 		this.select();
 	},

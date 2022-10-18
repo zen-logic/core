@@ -104,7 +104,8 @@ App.prototype = {
 				parent: this.desktop,
 				title: cfg.label,
 				_pos: {x: 100, y: 200},
-				size: {w: 320, h: 240, minW: 200, minH: 100, maxW: 600}
+				_size: {w: 320, h: 240, minW: 200, minH: 100, maxW: 600},
+				size: {w: 320, h: 240, minW: 200, minH: 100}
 			})
 		);
 

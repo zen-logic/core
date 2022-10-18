@@ -17,11 +17,19 @@ function Desktop (params) {
 		this.rubberband = null;
 		this.stack = {};
 		this.selected = [];
-		this.autopos = {
+		
+		this.iconpos = {
 			x: 0,
 			y: 0,
 			z: 0
 		};
+
+		this.winpos = {
+			x: 0,
+			y: 0,
+			z: 0
+		};
+		
 		this.init(params);
 	}
 	return this;
@@ -201,45 +209,57 @@ Desktop.prototype = {
 
 	autoIconPos: function (icon) {
 		if (!icon.cfg.x && !icon.cfg.y) {
-			icon.x = this.autopos.x;
-			icon.y = this.autopos.y;
-			icon.z = this.autopos.z;
+			icon.x = this.iconpos.x;
+			icon.y = this.iconpos.y;
+			icon.z = this.iconpos.z;
 
-			this.autopos.x += icon.size.w;
-			if (this.autopos.x > this.w) {
-				this.autopos.x = 0;
-				this.autopos.y += icon.size.h;
-				icon.x = this.autopos.x;
-				icon.y = this.autopos.y;
-				this.autopos.x += icon.size.w;
+			this.iconpos.x += icon.size.w;
+			if (this.iconpos.x > this.w) {
+				this.iconpos.x = 0;
+				this.iconpos.y += icon.size.h;
+				icon.x = this.iconpos.x;
+				icon.y = this.iconpos.y;
+				this.iconpos.x += icon.size.w;
 			}
 			
-			this.autopos.z++;
+			this.iconpos.z++;
 		} else {
 			icon.x = icon.pos.x;
 			icon.y = icon.pos.y;
 			icon.z = icon.pos.z;
 		}
+	},
+
+	autoWindowPos: function (win) {
+		if (win.cfg.size) {
+			let s = win.cfg.size;
+			win.w = s.w !== undefined ? s.w : win.size.w;
+			win.h = s.h !== undefined ? s.h : win.size.h;
+		} else {
+			// auto size - use defaults
+			win.w = win.size.w;
+			win.h = win.size.h;
+		}
+
+		if (win.cfg.pos) {
+			let p = win.cfg.pos;
+			win.x = p.x !== undefined ? p.x : win.pos.x;
+			win.y = p.y !== undefined ? p.y : win.pos.y;
+		} else {
+			if (this.winpos.y === 0) {
+				this.winpos.y = this.minY + 64;
+				this.winpos.x = 64;
+			}
+
+			// auto position - centre on desktop
+			win.x = this.winpos.x;
+			win.y = this.winpos.y;
+
+			this.winpos.x += 32;
+			this.winpos.y += 32;
+		}
+
 	}
-	
-	// arrangeIcons: function () {
-	// 	const icons = this.icons.slice();
-
-	// 	// get the first icon with lowest top, left - this is our fixed point
-
-		
-
-		
-	// 	// this.icons.forEach((i1) => {
-	// 	// 	this.icons.forEach((i2) => {
-	// 	// 		if (i1 !== i2) {
-	// 	// 			if (core.util.rectsIntersect(i1.r, i2.r)) {
-	// 	// 				i2.x = i1.x + i1.size.w;
-	// 	// 			}
-	// 	// 		}
-	// 	// 	});
-	// 	// });
-	// }
 	
 };
 
