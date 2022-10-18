@@ -110,22 +110,23 @@
           },
           {
             "type": "Icon",
-            "image": "img/zen/icon/database.png",
-            "label": "Databases",
-            "items": []
-          },
-          {
-            "type": "Icon",
             "image": "img/zen/icon/users.png",
             "label": "Users",
             "items": []
           },
           {
             "type": "Icon",
+            "image": "img/zen/icon/database.png",
+            "label": "Databases",
+            "items": []
+          },
+          {
+            "type": "Icon",
             "image": "img/zen/icon/config.png",
-            "label": "Settings",
+            "label": "Configuration",
             "items": []
           }
+			
         ]
       }
     ]

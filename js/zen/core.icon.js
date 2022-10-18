@@ -323,11 +323,7 @@ Icon.prototype = {
 
 		this.label = this.cfg.label;
 		this.image = this.cfg.image;
-
-		core.log(this.parent);
-		
 		this.parent.autoIconPos(this);
-
 		this.setupEvents();
 	},
 
