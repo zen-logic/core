@@ -1,46 +1,7 @@
 import './zen/core.desktop.js';
 import './zen/view.icons.js';
 
-core.log('application loaded');
-
-let desktop = new core.wb.Desktop({});
-
-const splash = `
-	<div class="imageview" style="
-		background-image: url(img/zen/wall/2.jpg);
-		background-size: cover;
-		border: 1px solid #000;
-		display: flex; justify-content: center; align-items: center;
-		position: relative;
-	">
-		<img src="css/zen/img/icon/enso.png" style="height: 80%; filter: invert(1); opacity: .5;" draggable="false">
-		<div style="
-			text-shadow: -1px 1px 1px #000,
-						  1px 1px 1px #000,
-						 1px -1px 1px #000,
-						-1px -1px 1px #000;
-			position: absolute; 
-			width: 100%; height: 100%; top: 0; left: 0;
-			text-align: center;
-			color: #fff; 
-			display: flex; 
-			flex-direction: column; 
-			justify-content: center; 
-			align-items: center;
-			">
-			<div>
-				<p style="font-size: 18px; font-weight: bold; margin: 0;">Workbench</p>
-				<div style="text-shadow: none; font-size: 10px;">
-					<p style="margin: 0;">Core: 2.03.11</p>
-					<p style="margin: 0;">Python: 3.9.13</p>
-					<p style="margin: 0;">UWSGI: 2.0.20</p>
-				</div>
-				<p style="margin: .5em 0 0 0; font-size: 12px;">&copy; 2015-2022 <a style="color: #fff; text-decoration: none;" href="https://zenlogic.co.uk" target="_blank">Zen Logic Ltd.</a></p>
-			</div>
-		</div>
-	</div>`;
-
-desktop.menubar.setMenu({
+const menu = {
 	items: [
 		{type: 'icon', image: 'css/zen/img/icon/enso.png', items: [
 			{type: 'action', label: 'About', action: (e) => {
@@ -54,7 +15,7 @@ desktop.menubar.setMenu({
 							features: ['close'],
 							pos: {x: 'centre', y: 'centre'},
 							size: {w: 320, h: 240},
-							content: splash
+							view: 'views/zen/splash.html'
 						})
 					);
 				}
@@ -97,105 +58,69 @@ desktop.menubar.setMenu({
 			{type: 'action', cls: 'disabled', label: 'Save current'}
 		]}
 	]
-});
+};
 
-desktop.addItem(
-	new core.wb.Icon({
-		image: 'img/zen/icon/world.png',
-		label: 'System',
-		_fixed: true,
-		x: 0,
-		data: {
-			dblclick: (o) => {
-				alert(o.label);
+
+function App (params) {
+	if (arguments.length > 0) this.init(params);
+	return this;
+}
+
+App.prototype = {
+
+	init: function (params) {
+		core.log('application loaded');
+		this.cfg = params;
+		this.urlParams = new URLSearchParams(window.location.search);
+		this.launch();
+		return this;
+	},
+
+	launch: function () {
+		this.desktop = new core.wb.Desktop(this.cfg.workbench);
+		this.desktop.menubar.setMenu(menu);
+		this.setupObservers();
+	},
+
+	setupObservers: function () {
+		core.observe('IconWindow', 'APPLICATION', (src) => {
+			this.iconWindow(src);
+		});
+
+	},
+
+	iconWindow: function (src) {
+		const cfg = src.cfg;
+		if (cfg?.options?.single === true) {
+			if (this.desktop.hasItem(cfg.options.id)) {
+				this.desktop.getItem(cfg.options.id).select();
+				return;
 			}
 		}
-	})
-);
+		
+		const win = this.desktop.addItem(
+			new core.wb.IconWindow({
+				id: cfg?.options?.id !== undefined ? cfg.options.id : core.util.createUUID(),
+				parent: this.desktop,
+				title: cfg.label,
+				_pos: {x: 100, y: 200},
+				size: {w: 320, h: 240, minW: 200, minH: 100, maxW: 600}
+			})
+		);
 
-desktop.addItem(
-	new core.wb.Icon({
-		image: 'img/zen/icon/cubes.png',
-		label: 'Content blocks',
-		x: 80
-	})
-);
+		cfg.items.forEach((o) => {
+			o.parent = win.iconview;
+			win.iconview.addItem(new core.wb[o.type](o));
+		});
 
-desktop.addItem(
-	new core.wb.Icon({
-		image: 'img/zen/icon/templates.png',
-		label: 'Templates',
-		x: 160
-	})
-);
+	}
+	
+};
 
-desktop.addItem(
-	new core.wb.Icon({
-		image: 'img/zen/icon/websites.png',
-		label: 'Organisations',
-		x: 240
-	})
-);
 
-desktop.addItem(
-	new core.wb.Icon({
-		image: 'img/zen/icon/database.png',
-		label: 'Databases',
-		x: 320
-	})
-);
-
-desktop.addItem(
-	new core.wb.Icon({
-		image: 'img/zen/icon/users.png',
-		label: 'Users',
-		x: 400
-	})
-);
-
-desktop.addItem(
-	new core.wb.Icon({
-		image: 'img/zen/icon/images.png',
-		label: 'Images',
-		x: 480
-	})
-);
-
-desktop.addItem(
-	new core.wb.Icon({
-		image: 'img/zen/icon/folder.png',
-		label: 'Files',
-		x: 560
-	})
-);
-
-desktop.addItem(
-	new core.wb.Icon({
-		image: 'img/zen/icon/config.png',
-		label: 'Configuration',
-		x: 640
-	})
-);
-
-desktop.addItem(
-	new core.wb.Icon({
-		image: 'img/zen/icon/video.png',
-		label: 'Video',
-		x: 720
-	})
-);
-
-const win = desktop.addItem(
-	new core.wb.Window({
-		parent: desktop,
-		title: 'Icon Window',
-		pos: {x: 100, y: 200},
-		size: {w: 320, h: 240, minW: 200, minH: 100, maxW: 600}
-	})
-);
-
-new core.wb.IconView({
-	parent: win,
-	container: win.body
+core.getJSON('js/config.json').then((config) => {
+	window.app = new App(config);			
 });
+
+
 

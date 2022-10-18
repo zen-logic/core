@@ -297,6 +297,7 @@ Icon.prototype = {
 		this.id = params.id === undefined ? core.util.createUUID() : params.id;
 		this.data = params.data === undefined ? {} : params.data;
 		this.fixed = params.fixed;
+
 		this.render();
 
 		// provide initial drag info
@@ -323,9 +324,9 @@ Icon.prototype = {
 		this.label = this.cfg.label;
 		this.image = this.cfg.image;
 
-		this.x = this.cfg.x !== undefined ? this.cfg.x : 0;
-		this.y = this.cfg.y !== undefined ? this.cfg.y : 0;
-		this.z = this.cfg.z !== undefined ? this.cfg.z : 0;
+		core.log(this.parent);
+		
+		this.parent.autoIconPos(this);
 
 		this.setupEvents();
 	},
@@ -346,7 +347,11 @@ Icon.prototype = {
 		
 		this.el.addEventListener('dblclick', (e) => {
 			core.log('double click', this.id);
-			if (this.data.dblclick) this.data.dblclick(this);
+			if (this.data.dblclick) {
+				this.data.dblclick(this);
+			} else if (this.cfg.action) {
+				core.notify(this.cfg.action, this);
+			}
 			e.stopPropagation();
 		});
 		

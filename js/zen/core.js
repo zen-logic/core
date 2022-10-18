@@ -101,6 +101,33 @@ let core = {
 	alert: window.alert.bind(window),
 	confirm: window.confirm.bind(window),
 
+
+	getJSON: function (url) {
+
+		return new Promise(function (resolve, reject) {
+			const req = new XMLHttpRequest();
+			req.onload = function() {
+				if (req.status >= 200 && req.status < 400) {
+					const data = JSON.parse(req.responseText);
+					resolve(data);
+				} else {
+					core.log('error loading data: ' + url);
+					reject();
+				}
+			};
+			
+			req.onerror = function() {
+				core.log('error loading data (connection error): ' + url);
+				reject();
+			};
+			
+			req.open('GET', url + '?ts=' + Math.floor(Date.now() / 1000));
+			req.send();
+			
+		});
+		
+	},
+	
 	observers: {},
 	
 	observe: function (queue, id, callback) {
@@ -118,7 +145,7 @@ let core = {
 	},
 	
 	notify: function (queue, params) {
-		// core.log('NOTIFY:', queue, params);
+		core.log('NOTIFY:', queue, params);
 		if (core.observers[queue] !== undefined) {
 			for (let [id, callback] of Object.entries(core.observers[queue])) {
 				// we don't need the id

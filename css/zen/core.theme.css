@@ -136,6 +136,7 @@ body {
 
 
 #workbench .icon .label {
+	padding: 0 2px 0 2px;
 	font-size: 12px;
 }
 
@@ -157,7 +158,7 @@ body {
 }
 
 #workbench .icon.selected .label {
-	padding: 0 4px 0 4px;
+	padding: 0 2px 0 2px;
 	background-color: var(--highlight);
 	color: #fff;
 	border-radius: 2px;

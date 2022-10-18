@@ -4,23 +4,6 @@ const DRAGLIMIT = 6;
 
 function Window (params) {
 	if (arguments.length > 0) {
-		this.views = [];
-		
-		this.pos = {
-			x: 0,
-			y: 0,
-			z: 0
-		};
-
-		this.size = {
-			w: 140,
-			h: 96,
-			minW: 0,
-			minH: 0,
-			maxW: -1,
-			maxH: -1
-		};
-	
 		this.init(params);
 	}
 	return this;
@@ -124,20 +107,45 @@ Window.prototype = {
 			if (el) el.innerHTML = val;
 		}
 	},
+
+	defaults: function () {
+		this.views = [];
+		
+		this.pos = {
+			x: 0,
+			y: 0,
+			z: 0
+		};
+
+		this.size = {
+			w: 140,
+			h: 96,
+			minW: 0,
+			minH: 0,
+			maxW: -1,
+			maxH: -1
+		};
+	},
 	
 	init: function (params) {
 		core.log('New Window', params);
+		this.defaults();
 		this.cfg = params;
 		this.desktop = window.desktop;
 		this.id = params.id === undefined ? core.util.createUUID() : params.id;
-		this.size.minW = params.size.minW !== undefined ? params.size.minW : this.size.minW;
-		this.size.minH = params.size.minH !== undefined ? params.size.minH : this.size.minH;
-		this.size.maxW = params.size.maxW !== undefined ? params.size.maxW : this.size.maxW;
-		this.size.maxH = params.size.maxH !== undefined ? params.size.maxH : this.size.maxH;
+		this.size.minW = params?.size?.minW !== undefined ? params.size.minW : this.size.minW;
+		this.size.minH = params?.size?.minH !== undefined ? params.size.minH : this.size.minH;
+		this.size.maxW = params?.size?.maxW !== undefined ? params.size.maxW : this.size.maxW;
+		this.size.maxH = params?.size?.maxH !== undefined ? params.size.maxH : this.size.maxH;
 		this.features = params.features !== undefined ? params.features : [
 			'title', 'status', 'max', 'min', 'resize', 'close'
 		];
 		this.render();
+		if (this.cfg.view) {
+			core.ui.loadView(this.cfg.view, this.body).then((view) => {
+				core.log('view did load');
+			});
+		}
 		return this;
 	},
 

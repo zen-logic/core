@@ -17,6 +17,11 @@ function Desktop (params) {
 		this.rubberband = null;
 		this.stack = {};
 		this.selected = [];
+		this.autopos = {
+			x: 0,
+			y: 0,
+			z: 0
+		};
 		this.init(params);
 	}
 	return this;
@@ -80,7 +85,6 @@ Desktop.prototype = {
 				this.stack[item].close();
 			}
 		}
-		
 	},
 	
 	render: function () {
@@ -101,9 +105,18 @@ Desktop.prototype = {
 				this.getRubberBand(e);
 			}
 		});
+
+		if (this.cfg.items) this.setItems(this.cfg.items);
 		
 	},
 
+	setItems: function (items) {
+		items.forEach((o) => {
+			o.parent = this;
+			this.addItem(new core.wb[o.type](o));
+		});
+	},
+	
 	select: function (o, multi) {
 		if (multi === true) {
 			if (this.selected[0] instanceof core.wb.Window) {
@@ -186,24 +199,47 @@ Desktop.prototype = {
 		o.parent = this;
 	},
 
-	arrangeIcons: function () {
-		const icons = this.icons.slice();
+	autoIconPos: function (icon) {
+		if (!icon.cfg.x && !icon.cfg.y) {
+			icon.x = this.autopos.x;
+			icon.y = this.autopos.y;
+			icon.z = this.autopos.z;
 
-		// get the first icon with lowest top, left - this is our fixed point
-
-		
-
-		
-		// this.icons.forEach((i1) => {
-		// 	this.icons.forEach((i2) => {
-		// 		if (i1 !== i2) {
-		// 			if (core.util.rectsIntersect(i1.r, i2.r)) {
-		// 				i2.x = i1.x + i1.size.w;
-		// 			}
-		// 		}
-		// 	});
-		// });
+			this.autopos.x += icon.size.w;
+			if (this.autopos.x > this.w) {
+				this.autopos.x = 0;
+				this.autopos.y += icon.size.h;
+				icon.x = this.autopos.x;
+				icon.y = this.autopos.y;
+				this.autopos.x += icon.size.w;
+			}
+			
+			this.autopos.z++;
+		} else {
+			icon.x = icon.pos.x;
+			icon.y = icon.pos.y;
+			icon.z = icon.pos.z;
+		}
 	}
+	
+	// arrangeIcons: function () {
+	// 	const icons = this.icons.slice();
+
+	// 	// get the first icon with lowest top, left - this is our fixed point
+
+		
+
+		
+	// 	// this.icons.forEach((i1) => {
+	// 	// 	this.icons.forEach((i2) => {
+	// 	// 		if (i1 !== i2) {
+	// 	// 			if (core.util.rectsIntersect(i1.r, i2.r)) {
+	// 	// 				i2.x = i1.x + i1.size.w;
+	// 	// 			}
+	// 	// 		}
+	// 	// 	});
+	// 	// });
+	// }
 	
 };
 
