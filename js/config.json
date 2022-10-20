@@ -130,5 +130,12 @@
         ]
       }
     ]
-  }
+  },
+
+	"schema": {
+		"version": 1,
+		"name": "zen",
+		"items": []
+	}
+
 }

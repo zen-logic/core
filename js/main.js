@@ -1,4 +1,5 @@
 import './zen/core.desktop.js';
+import './zen/core.storage.js';
 import './zen/view.icons.js';
 
 const menu = {
@@ -72,7 +73,12 @@ App.prototype = {
 		core.log('application loaded');
 		this.cfg = params;
 		this.urlParams = new URLSearchParams(window.location.search);
-		this.launch();
+
+		this.db = new core.db.Storage(this.cfg.schema);
+        this.db.open().then(() => {
+			this.launch();
+		});
+		
 		return this;
 	},
 

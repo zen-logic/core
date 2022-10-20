@@ -113,7 +113,7 @@ Desktop.prototype = {
 				this.getRubberBand(e);
 			}
 		});
-
+		
 		if (this.cfg.items) this.setItems(this.cfg.items);
 		
 	},

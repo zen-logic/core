@@ -111,13 +111,6 @@ body {
 	border: 1px solid #000;
 }
 
-#workbench .window.list .body {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-	padding: 4px;
-}
-
 #workbench .window > .header {
 	border-bottom: 1px solid #000;
 	display: flex;
@@ -252,6 +245,7 @@ body {
 	overflow-y: auto;
 }
 
+
 #workbench .list .icon {
 	position: unset;
 	gap: 4px;
@@ -290,6 +284,12 @@ body {
 	overflow: auto;
 }
 
+#workbench .window.list .iconview {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 4px;
+}
 
 #workbench .window > .body:has(.iconview) {
 	overflow: unset;
