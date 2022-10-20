@@ -141,22 +141,37 @@ IconView.prototype = {
 		delete this.stack[o.id];
 	},
 
-	autoIconPos: function (icon) {
+	autoIconPos: function (icon, layout) {
+
 		if (!icon.cfg.x && !icon.cfg.y) {
 			icon.x = this.autopos.x;
 			icon.y = this.autopos.y;
 			icon.z = this.autopos.z;
 
-			this.autopos.x += icon.size.w;
-			if (this.autopos.x > this.parent.w) {
-				this.autopos.x = 0;
+			switch (layout) {
+			case 'vertical':
 				this.autopos.y += icon.size.h;
-				icon.x = this.autopos.x;
-				icon.y = this.autopos.y;
+				if (this.autopos.y > this.parent.h) {
+					this.autopos.y = 0;
+					this.autopos.x += icon.size.w;
+					icon.y = this.autopos.y;
+					icon.x = this.autopos.x;
+					this.autopos.y += icon.size.h;
+				}
+				break;
+			default:
 				this.autopos.x += icon.size.w;
+				if (this.autopos.x > this.parent.w) {
+					this.autopos.x = 0;
+					this.autopos.y += icon.size.h;
+					icon.x = this.autopos.x;
+					icon.y = this.autopos.y;
+					this.autopos.x += icon.size.w;
+				}
 			}
 			
 			this.autopos.z++;
+			
 		} else {
 			icon.x = icon.pos.x;
 			icon.y = icon.pos.y;
@@ -186,7 +201,6 @@ IconWindow.prototype.init = function (params) {
 	});
 
 	this.addView(this.iconview);
-	
 
 	return this;
 };

@@ -73,7 +73,7 @@ MenuBar.prototype = {
 				menuItem.addEventListener('click', (e) => {
 					// disable the menu bar (closes the menu)
 					this.el.classList.add('disabled');
-					item.action(e);
+					core.notify(item.action, item);
 
 					// re-enable the menu bar
 					desktop.el.addEventListener('mousemove', function enable () {

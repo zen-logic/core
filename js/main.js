@@ -2,65 +2,6 @@ import './zen/core.desktop.js';
 import './zen/core.storage.js';
 import './zen/view.icons.js';
 
-const menu = {
-	items: [
-		{type: 'icon', image: 'css/zen/img/icon/enso.png', items: [
-			{type: 'action', label: 'About', action: (e) => {
-				if (desktop.hasItem('splash')) {
-					desktop.getItem('splash').select();
-				} else {
-					desktop.addItem(
-						new core.wb.Window({
-							id: 'splash',
-							parent: desktop,
-							features: ['close'],
-							pos: {x: 'centre', y: 'centre'},
-							size: {w: 320, h: 240},
-							view: 'views/zen/splash.html'
-						})
-					);
-				}
-			}},
-			{type: 'separator'},
-			{type: 'action', cls: 'disabled', label: 'Projects...'},
-			{type: 'action', cls: 'disabled', label: 'Publish...'},
-			{type: 'separator'},
-			{type: 'action', label: 'CMS', action: (e) => {location = '/cms';}},
-			{type: 'action', label: 'Developer tools', action: (e) => {location = '/developer/system';}},
-			{type: 'action', label: 'View site', action: (e) => {window.open('/', '_blank').focus();}},
-			{type: 'separator'},
-		]},
-		{type: 'menu', cls: 'app', label: 'Application', items: [
-			{type: 'action', label: 'Navigation', action: (e) => {app.showHierarchy();}},
-			{type: 'action', label: 'Live preview', action: (e) => {app.showPreview();}},
-			{type: 'action', label: 'Content editor', action: (e) => {app.showContentEditor();}},
-			
-			{type: 'action', cls: 'disabled', label: 'Content modules'},
-			{type: 'separator'},
-			{type: 'action', cls: 'disabled', label: 'Brand settings'},
-			{type: 'action', label: 'Templates', action: (e) => {app.showTemplates();}},
-			{type: 'separator'},
-			{type: 'action', cls: 'disabled', label: 'Visitor analytics'}
-		]},
-		{type: 'menu', label: 'Window', items: [
-			{type: 'action', label: 'Show icons', action: (e) => {app.desktop.showAsIcons();}},
-			{type: 'action', label: 'Show list', action: (e) => {app.desktop.showAsList();}},
-			{type: 'separator'},
-			{type: 'action', cls: 'disabled', label: 'Properties'}
-		]},
-		{type: 'menu', label: 'Icon', items: [
-			{type: 'action', cls: 'disabled', label: 'Fix in place'},
-			{type: 'separator'},
-			{type: 'action', cls: 'disabled', label: 'Properties'}
-		]},
-		{type: 'menu', label: 'Workspace', items: [
-			{type: 'action', label: 'Reset', action: (e) => {app.desktop.cleanup();}},
-			{type: 'separator'},
-			{type: 'action', cls: 'disabled', label: 'Save current'}
-		]}
-	]
-};
-
 
 function App (params) {
 	if (arguments.length > 0) this.init(params);
@@ -84,11 +25,39 @@ App.prototype = {
 
 	launch: function () {
 		this.desktop = new core.wb.Desktop(this.cfg.workbench);
-		this.desktop.menubar.setMenu(menu);
+		// this.desktop.menubar.setMenu(menu);
+		this.desktop.menubar.setMenu(this.cfg.menubar);
 		this.setupObservers();
 	},
 
 	setupObservers: function () {
+
+		core.observe('CreateWindow', 'APPLICATION', (src) => {
+			
+			if (src.options) {
+				if (src.options.single === true) {
+					if (desktop.hasItem(src.options.id)) {
+						desktop.getItem(src.options.id).select();
+						return;
+					}			
+				}
+				
+				desktop.addItem(
+					new core.wb.Window({
+						id: src.options.id,
+						parent: desktop,
+						features: src.options.features,
+						pos: src.options.pos,
+						size: src.options.size,
+						view: src.options.view
+					})
+				);
+
+			}
+			
+		});
+
+		
 		core.observe('IconWindow', 'APPLICATION', (src) => {
 			this.iconWindow(src);
 		});
@@ -111,7 +80,14 @@ App.prototype = {
 				title: cfg.label,
 				_pos: {x: 100, y: 200},
 				_size: {w: 320, h: 240, minW: 200, minH: 100, maxW: 600},
-				size: {w: 320, h: 240, minW: 200, minH: 100}
+				size: {
+					w: cfg?.options?.w !== undefined ? cfg.options.w : 320,
+					// w: 320,
+					h: cfg?.options?.h !== undefined ? cfg.options.h : 240,
+					// h: 240,
+					minW: 200,
+					minH: 100
+				}
 			})
 		);
 

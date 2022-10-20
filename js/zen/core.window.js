@@ -78,6 +78,10 @@ Window.prototype = {
 		} else if (this.size.w > this.size.maxW && this.size.maxW > -1) {
 			this.size.w = this.size.maxW;
 		}
+
+		if (this.x + this.size.w > this.desktop.maxX) {
+			this.size.w = this.desktop.maxX - this.x;
+		}
 		
 		this.el.style.width = this.size.w + 'px';
 	},
@@ -94,6 +98,10 @@ Window.prototype = {
 			this.size.h = this.size.maxH;
 		}
 
+		if (this.y + this.size.h > this.desktop.maxY) {
+			this.size.h = this.desktop.maxY - this.y;
+		}
+		
 		this.el.style.height = this.size.h + 'px';
 	},
 	
@@ -254,6 +262,7 @@ Window.prototype = {
 			this.el.classList.add('active');
 			this.desktop.select(this);
 			this.desktop.bringToFront(this);
+			core.notify('SelectWindow', this);
 		}
 	},
 	

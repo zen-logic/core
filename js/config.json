@@ -1,141 +1,198 @@
 {
-  "workbench": {
-    "items": [
-      {
-        "type": "Icon",
-        "image": "img/zen/icon/world.png",
-        "label": "System",
-        "action": "IconWindow",
-		"options": {
-			"single": true,
-			"id": "W_SYS"
-		},
-        "items": [
-          {
-            "type": "Icon",
-            "image": "img/zen/icon/websites.png",
-            "label": "Organisations",
+	"workbench": {
+		"items": [
+			{
+			"type": "Icon",
+			"image": "img/zen/icon/world.png",
+			"label": "System",
 			"action": "IconWindow",
 			"options": {
 				"single": true,
-				"id": "W_ORG"
+				"id": "W_SYS",
+				"h": 126
 			},
-            "items": [
-              {
-                "type": "Icon",
-                "image": "img/brand/rich-icon.png",
-                "label": "Rich Interactive",
+			"items": [
+				{
+				"type": "Icon",
+				"image": "img/zen/icon/websites.png",
+				"label": "Organisations",
 				"action": "IconWindow",
 				"options": {
 					"single": true,
-					"id": "W_RICH_INTERACTIVE"
+					"id": "W_ORG"
 				},
-
-                "items": [
-                  {
-                    "type": "Icon",
-                    "image": "img/brand/rich-icon.png",
-                    "label": "Demo Bubl",
+				"items": [
+					{
+					"type": "Icon",
+					"image": "img/brand/rich-icon.png",
+					"label": "Rich Interactive",
 					"action": "IconWindow",
 					"options": {
 						"single": true,
-						"id": "W_RICH_DEMO_BUBL"
+						"id": "W_RICH_INTERACTIVE"
+					},
+
+					"items": [
+						{
+						"type": "Icon",
+						"image": "img/brand/rich-icon.png",
+						"label": "Demo Bubl",
+						"action": "IconWindow",
+						"options": {
+							"single": true,
+							"id": "W_RICH_DEMO_BUBL"
+						},
+						
+						"items": [
+							{
+							"type": "Icon",
+							"image": "img/zen/icon/config.png",
+							"label": "Settings",
+							"items": []
+						},
+							{
+							"type": "Icon",
+							"image": "img/zen/icon/images.png",
+							"label": "Images",
+							"items": []
+						},
+							{
+							"type": "Icon",
+							"image": "img/zen/icon/video.png",
+							"label": "Video",
+							"items": []
+						},
+							{
+							"type": "Icon",
+							"image": "img/zen/icon/folder.png",
+							"label": "Pages",
+							"items": []
+						},
+							{
+							"type": "Icon",
+							"image": "img/zen/icon/templates.png",
+							"label": "Templates",
+							"items": []
+						},
+							{
+							"type": "Icon",
+							"image": "img/zen/icon/cubes.png",
+							"label": "Content Blocks",
+							"items": []
+						}
+						]
+					}
+					]
+				},
+					{
+					"type": "Icon",
+					"image": "img/brand/oceania-icon.png",
+					"label": "Oceania Cruises",
+					"action": "IconWindow",
+					"options": {
+						"single": true,
+						"id": "W_OCEANIA"
+					},
+					"items": []
+				},
+					{
+					"type": "Icon",
+					"image": "img/brand/zen-icon.png",
+					"label": "Zen Logic",
+					"action": "IconWindow",
+					"options": {
+						"single": true,
+						"id": "W_ZEN"
 					},
 					
-                    "items": [
-                      {
-                        "type": "Icon",
-                        "image": "img/zen/icon/config.png",
-                        "label": "Settings",
-                        "items": []
-                      },
-                      {
-                        "type": "Icon",
-                        "image": "img/zen/icon/images.png",
-                        "label": "Images",
-                        "items": []
-                      },
-                      {
-                        "type": "Icon",
-                        "image": "img/zen/icon/video.png",
-                        "label": "Video",
-                        "items": []
-                      },
-                      {
-                        "type": "Icon",
-                        "image": "img/zen/icon/folder.png",
-                        "label": "Pages",
-                        "items": []
-                      },
-                      {
-                        "type": "Icon",
-                        "image": "img/zen/icon/templates.png",
-                        "label": "Templates",
-                        "items": []
-                      },
-                      {
-                        "type": "Icon",
-                        "image": "img/zen/icon/cubes.png",
-                        "label": "Content Blocks",
-                        "items": []
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "type": "Icon",
-                "image": "img/brand/oceania-icon.png",
-                "label": "Oceania Cruises",
-				"action": "IconWindow",
-				"options": {
-					"single": true,
-					"id": "W_OCEANIA"
-				},
-                "items": []
-              },
-              {
-                "type": "Icon",
-                "image": "img/brand/zen-icon.png",
-                  "label": "Zen Logic",
-				"action": "IconWindow",
-				"options": {
-					"single": true,
-					"id": "W_ZEN"
-				},
-				  
-                "items": []
-              }
-            ]
-          },
-          {
-            "type": "Icon",
-            "image": "img/zen/icon/users.png",
-            "label": "Users",
-            "items": []
-          },
-          {
-            "type": "Icon",
-            "image": "img/zen/icon/database.png",
-            "label": "Databases",
-            "items": []
-          },
-          {
-            "type": "Icon",
-            "image": "img/zen/icon/config.png",
-            "label": "Configuration",
-            "items": []
-          }
-			
-        ]
-      }
-    ]
-  },
+					"items": []
+				}
+				]
+			},
+				{
+				"type": "Icon",
+				"image": "img/zen/icon/users.png",
+				"label": "Users",
+				"items": []
+			},
+				{
+				"type": "Icon",
+				"image": "img/zen/icon/database.png",
+				"label": "Databases",
+				"items": []
+			},
+				{
+				"type": "Icon",
+				"image": "img/zen/icon/config.png",
+				"label": "Configuration",
+				"items": []
+			}
+				
+			]
+		}
+		]
+	},
 
 	"schema": {
 		"version": 1,
 		"name": "zen",
 		"items": []
+	},
+
+	"menubar": {
+		"items": [
+			{
+			"type": "icon",
+			"image": "css/zen/img/icon/enso.png",
+			"items": [
+				{"type": "action",
+				 "label": "About",
+				 "action": "CreateWindow",
+				 "options": {
+					 "single": true,
+ 					 "id": "splash",
+ 					 "features": ["close"],
+ 					 "pos": {"x": "centre", "y": "centre"},
+ 					 "size": {"w": 320, "h": 240},
+ 					 "view": "views/zen/splash.html"
+				 }
+				},
+				 
+				{"type": "separator"},
+				{"type": "action", "cls": "disabled", "label": "Projects..."},
+				{"type": "action", "cls": "disabled", "label": "Publish..."},
+				{"type": "separator"},
+				{"type": "action", "label": "CMS"},
+				{"type": "action", "label": "Developer tools"},
+				{"type": "action", "label": "View site"},
+				{"type": "separator"}
+			]
+		}, {
+			"type": "menu", "cls": "app", "label": "Application",
+			"items": [
+				{"type": "action", "label": "Navigation"}
+			]
+		}, {"type": "menu", "label": "Window",
+			"items": [
+				{"type": "action", "label": "Show icons"},
+				{"type": "action", "label": "Show list"},
+				{"type": "separator"},
+				{"type": "action", "cls": "disabled", "label": "Properties"}
+			]
+		   },
+			{"type": "menu", "label": "Icon",
+			 "items": [
+				 {"type": "action", "cls": "disabled", "label": "Fix in place"},
+				 {"type": "separator"},
+				 {"type": "action", "cls": "disabled", "label": "Properties"}
+			 ]},
+			{"type": "menu", "label": "Workspace",
+			 "items": [
+				 {"type": "action", "label": "Reset"},
+				 {"type": "separator"},
+				 {"type": "action", "cls": "disabled", "label": "Save current"}
+			 ]}
+		]
 	}
 
 }
