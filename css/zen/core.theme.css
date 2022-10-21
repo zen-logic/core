@@ -52,8 +52,9 @@ body {
 .workbench-menu ul.menu-items > li ul {
 	border: 1px solid var(--outline);
 	background-color: #fff;
-	box-shadow: var(--shadow);
-	clip-path: inset(0px -5px -5px -5px);
+	box-shadow: 0px 3px 4px -2px rgba(0,0,0,0.3),
+				3px 0px 4px -2px rgba(0,0,0,0.3),
+				-3px 0px 4px -2px rgba(0,0,0,0.3);
 	color: var(--default);
 }
 

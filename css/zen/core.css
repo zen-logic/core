@@ -86,8 +86,29 @@ body {
 	height: 24px;
 }
 
-.workbench-menu:not(.disabled) ul.menu-items > li:hover ul {
+.workbench-menu:not(.disabled) ul.menu-items > li:not(.disabled):hover > ul {
 	display: flex;
+}
+
+
+.workbench-menu ul.menu-items ul.menu-items > li:has(.menu-items) {
+	padding-right: 64px;
+	background-repeat: no-repeat;
+	background-position: right 6px center;
+	background-size: 6px;
+	background-image: url(img/ui/select-right.png);
+} 
+
+.workbench-menu ul.menu-items ul.menu-items > li > ul.menu-items {
+	display: none;
+}
+
+
+.workbench-menu ul.menu-items ul.menu-items > li:not(.disabled):hover ul.menu-items {
+	display: flex;
+	position: absolute;
+	left: 100%;
+	top: -1px;
 }
 
 .workbench-menu > ul.menu-items {
