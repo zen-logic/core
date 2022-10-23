@@ -105,7 +105,6 @@ IconView.prototype = {
 			// core.log('select single');
 			this.deselectAll();
 			core.notify('deselect-all', {source: this.id});
-			// o.el.classList.add('selected');
 			this.selected.push(o);
 		}
 	},
@@ -142,7 +141,6 @@ IconView.prototype = {
 	},
 
 	autoIconPos: function (icon, layout) {
-
 		if (!icon.cfg.x && !icon.cfg.y) {
 			icon.x = this.autopos.x;
 			icon.y = this.autopos.y;
@@ -202,6 +200,11 @@ IconWindow.prototype.init = function (params) {
 
 	this.addView(this.iconview);
 
+	params.items.forEach((o) => {
+		o.parent = this.iconview;
+		this.iconview.addItem(new core.wb[o.type](o));
+	});
+	
 	return this;
 };
 

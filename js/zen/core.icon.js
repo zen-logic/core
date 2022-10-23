@@ -293,6 +293,7 @@ Icon.prototype = {
 		core.log('New Icon', params);
 		
 		this.cfg = params;
+
 		this.parent = params.parent !== undefined ? params.parent : window.desktop;
 		this.id = params.id === undefined ? core.util.createUUID() : params.id;
 		this.data = params.data === undefined ? {} : params.data;
@@ -346,7 +347,12 @@ Icon.prototype = {
 			if (this.data.dblclick) {
 				this.data.dblclick(this);
 			} else if (this.cfg.action) {
-				core.notify(this.cfg.action, this);
+				const opts = {};
+				Object.assign(opts, this.cfg.options);
+				opts.items = this.cfg.items;
+				core.notify(this.cfg.action, {
+					options: opts
+				});
 			}
 			e.stopPropagation();
 		});
@@ -362,7 +368,11 @@ Icon.prototype = {
 			// core.log('selected');
 			this.el.classList.add('selected');
 			this.parent.select(this, multi);
+			if (this.parent instanceof core.wb.IconView) {
+				desktop.bringToFront(this.parent.parent);
+			}
 			this.parent.bringToFront(this);
+			core.notify('SelectIcon', this);
 		}
 	},
 

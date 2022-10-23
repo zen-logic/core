@@ -133,6 +133,8 @@ Window.prototype = {
 			maxW: -1,
 			maxH: -1
 		};
+
+		this.persistState = false;
 	},
 	
 	init: function (params) {
@@ -140,6 +142,7 @@ Window.prototype = {
 		this.defaults();
 		this.cfg = params;
 		this.desktop = window.desktop;
+		if (params.id) this.persistState = true;
 		this.id = params.id === undefined ? core.util.createUUID() : params.id;
 		this.size.minW = params?.size?.minW !== undefined ? params.size.minW : this.size.minW;
 		this.size.minH = params?.size?.minH !== undefined ? params.size.minH : this.size.minH;
@@ -342,6 +345,7 @@ Window.prototype = {
 			self.desktop.el.removeEventListener('mouseup', endDrag);
 			self.desktop.el.removeEventListener('mouseout', exitWindow);
 			self.el.classList.remove('dragging');
+			self.saveState();
 		}
 
 		function exitWindow (e) {
@@ -382,6 +386,7 @@ Window.prototype = {
 			self.desktop.el.removeEventListener('mousemove', resize);
 			self.desktop.el.removeEventListener('mouseup', endResize);
 			self.desktop.el.removeEventListener('mouseout', exitWindow);
+			self.saveState();
 		}
 
 		function exitWindow (e) {
@@ -404,6 +409,20 @@ Window.prototype = {
 		this.desktop.el.addEventListener('mouseout', exitWindow);
 	},
 
+
+	saveState: function () {
+		if (this.persistState === true) {
+			core.log('window save state');
+		}
+	},
+
+
+	restoreState: function () {
+		if (this.persistState === true) {
+			core.log('window restore state');
+		}
+	}
+	
 };
 
 

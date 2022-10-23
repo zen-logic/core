@@ -15,21 +15,11 @@ function Desktop (params) {
 	if (arguments.length > 0) {
 		Object.assign(this, rubberband);
 		this.rubberband = null;
+		this.workspace = null;
 		this.stack = {};
 		this.selected = [];
-		
-		this.iconpos = {
-			x: 0,
-			y: 0,
-			z: 0
-		};
-
-		this.winpos = {
-			x: 0,
-			y: 0,
-			z: 0
-		};
-		
+		this.iconpos = {x: 0, y: 0, z: 0};
+		this.winpos = {x: 0, y: 0, z: 0};
 		this.init(params);
 	}
 	return this;

@@ -20,11 +20,11 @@ body {
 				 "Lucida Grande",
 				 sans-serif;
 	color: var(--default);
+	background: var(--bg) no-repeat center/cover url(img/wall/light-blue.jpg);
 }
 
 
 #workbench {
-	background: var(--bg) no-repeat center/cover url(img/wall/light-blue.jpg);
 	font-weight: 300;
 	font-size: 14px;
 	line-height: normal;
@@ -167,7 +167,7 @@ body {
 
 
 #workbench .list .icon.selected{
-	background-color: #cde;
+	background-color: var(--highlight);
 }
 
 #workbench .list .icon.selected .image {

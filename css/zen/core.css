@@ -107,7 +107,7 @@ body {
 .workbench-menu ul.menu-items ul.menu-items > li:not(.disabled):hover ul.menu-items {
 	display: flex;
 	position: absolute;
-	left: 100%;
+	left: calc(100% - 4px);
 	top: -1px;
 }
 
@@ -130,6 +130,7 @@ body {
 	flex-direction: column;
 	overflow: hidden;
 	border: 1px solid #000;
+	background-color: #fff;
 }
 
 #workbench .window > .header {

@@ -12,6 +12,7 @@ App.prototype = {
 
 	init: function (params) {
 		core.log('application loaded');
+		this.id = 'APPLICATION';
 		this.cfg = params;
 		this.urlParams = new URLSearchParams(window.location.search);
 
@@ -32,8 +33,8 @@ App.prototype = {
 
 	setupObservers: function () {
 
-		core.observe('CreateWindow', 'APPLICATION', (src) => {
-			
+		core.observe('CreateWindow', this.id, (src) => {
+
 			if (src.options) {
 				if (src.options.single === true) {
 					if (desktop.hasItem(src.options.id)) {
@@ -41,59 +42,10 @@ App.prototype = {
 						return;
 					}			
 				}
-				
-				desktop.addItem(
-					new core.wb.Window({
-						id: src.options.id,
-						parent: desktop,
-						features: src.options.features,
-						pos: src.options.pos,
-						size: src.options.size,
-						view: src.options.view
-					})
-				);
-
+				const win = new core.wb[src.options.type](src.options);
+				desktop.addItem(win);
 			}
 			
-		});
-
-		
-		core.observe('IconWindow', 'APPLICATION', (src) => {
-			this.iconWindow(src);
-		});
-
-	},
-
-	iconWindow: function (src) {
-		const cfg = src.cfg;
-		if (cfg?.options?.single === true) {
-			if (this.desktop.hasItem(cfg.options.id)) {
-				this.desktop.getItem(cfg.options.id).select();
-				return;
-			}
-		}
-		
-		const win = this.desktop.addItem(
-			new core.wb.IconWindow({
-				id: cfg?.options?.id !== undefined ? cfg.options.id : core.util.createUUID(),
-				parent: this.desktop,
-				title: cfg.label,
-				_pos: {x: 100, y: 200},
-				_size: {w: 320, h: 240, minW: 200, minH: 100, maxW: 600},
-				size: {
-					w: cfg?.options?.w !== undefined ? cfg.options.w : 320,
-					// w: 320,
-					h: cfg?.options?.h !== undefined ? cfg.options.h : 240,
-					// h: 240,
-					minW: 200,
-					minH: 100
-				}
-			})
-		);
-
-		cfg.items.forEach((o) => {
-			o.parent = win.iconview;
-			win.iconview.addItem(new core.wb[o.type](o));
 		});
 
 	}
