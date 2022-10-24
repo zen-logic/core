@@ -59,10 +59,11 @@ IconView.prototype = {
 				this.deselectAll();
 			}
 		});
-		
+
 	},
 
-	cleanup: function () {
+	cleanup: function (win) {
+		win.desktop.menubar.updateMenu('MNU_WINDOW', []);
 		core.removeObserver('deselect-all', this.id);
 	},
 	
@@ -193,6 +194,13 @@ IconWindow.prototype = new core.wb.Window();
 IconWindow.prototype.init = function (params) {
 	core.wb.Window.prototype.init.call(this, params);
 
+	return this;
+};
+
+
+IconWindow.prototype.afterRender = async function () {
+	await this.restoreState();
+	
 	this.iconview = new core.wb.IconView({
 		parent: this,
 		container: this.body
@@ -200,37 +208,92 @@ IconWindow.prototype.init = function (params) {
 
 	this.addView(this.iconview);
 
-	params.items.forEach((o) => {
+	this.cfg.items.forEach((o) => {
 		o.parent = this.iconview;
 		this.iconview.addItem(new core.wb[o.type](o));
 	});
+
+	core.observe('ViewAsIcons', this.id, (src) => {
+		if (src?.owner === this) {
+			this.el.classList.remove('list');
+			this.saveState();
+		}
+	});
+
+	core.observe('ViewAsList', this.id, (src) => {
+		if (src?.owner === this) {
+			this.el.classList.add('list');
+			this.saveState();
+		}
+	});
+
+	this.select();
 	
-	return this;
 };
+
 
 IconWindow.prototype.getMenu = function (menubar) {
-	const items = [
-		{
-			"type": "action",
-			"label": "Show icons"
-		},
-		{
-			"type": "action",
-			"label": "Show list"
-		},
-		{
-			"type": "separator"
-		},
-		{
-			"type": "action",
-			"cls": "disabled",
-			"label": "Properties"
-		}
-	];
-
-	menubar.updateMenu('MNU_WINDOW', items);
-	
+	menubar.updateMenu('MNU_WINDOW', [{
+		"type": "action",
+		"label": "Show icons",
+		"action": "ViewAsIcons",
+		"owner": this
+	}, {
+		"type": "action",
+		"label": "Show list",
+		"action": "ViewAsList",
+		"owner": this
+	}, {
+		"type": "separator"
+	}, {
+		"type": "action",
+		"cls": "disabled",
+		"label": "Properties"
+	}]);
 };
+
+
+IconWindow.prototype.saveState = function () {
+	if (this.persistState === true) {
+		core.log('window save state');
+		app.db.put('windowData', {
+			uid: this.id,
+			pos: this.pos,
+			size: this.size,
+			viewAsList: this.el.classList.contains('list')
+		});
+	}
+};
+
+
+IconWindow.prototype.restoreState = async function () {
+	if (this.persistState === true) {
+		core.log('window restore state');
+		const o = await app.db.get('windowData', this.id);
+		if (o) {
+			// reset
+			this.w = 0; this.h = 0;
+			this.x = 0; this.y = 0;
+			
+			this.w = o.size.w;
+			this.h = o.size.h;
+			this.x = o.pos.x;
+			this.y = o.pos.y;
+			
+			if (o?.viewAsList === true) {
+				this.el.classList.add('list');
+			} else {
+				this.el.classList.remove('list');
+			}
+
+		} else {
+			this.desktop.autoWindowPos(this);
+		}
+	} else {
+		this.desktop.autoWindowPos(this);
+	}
+};
+
 
 core.namespace('core.wb', {
 	IconView: IconView,

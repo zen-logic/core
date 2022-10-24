@@ -138,14 +138,22 @@ Window.prototype = {
 			'title', 'status', 'max', 'min', 'resize', 'close'
 		];
 		this.render();
+		this.afterRender();
+		return this;
+	},
+
+	afterRender: function () {
 		if (this.cfg.view) {
 			core.ui.loadView(this.cfg.view, this.body).then((view) => {
 				core.log('view did load');
 			});
 		}
-		return this;
+
+		this.restoreState();
+		this.select();
 	},
 
+	
 	addView: function (view) {
 		if (!this.views.includes(view)) {
 			this.views.push(view);
@@ -154,7 +162,7 @@ Window.prototype = {
 
 	close: function () {
 		this.views.forEach((view) => {
-			view.cleanup();
+			view.cleanup(this);
 			view.el.remove();
 		});
 		this.desktop.remove(this);
@@ -240,10 +248,6 @@ Window.prototype = {
 		}
 		
 		this.title = this.cfg.title;
-
-		this.desktop.autoWindowPos(this);
-
-		this.select();
 	},
 
 	select: function () {
@@ -398,16 +402,38 @@ Window.prototype = {
 	saveState: function () {
 		if (this.persistState === true) {
 			core.log('window save state');
+			app.db.put('windowData', {
+				uid: this.id,
+				pos: this.pos,
+				size: this.size
+			});
 		}
 	},
 
 	restoreState: function () {
 		if (this.persistState === true) {
 			core.log('window restore state');
+			app.db.get('windowData', this.id).then((o) => {
+				if (o) {
+					// reset
+					this.w = 0; this.h = 0;
+					this.x = 0; this.y = 0;
+
+					this.w = o.size.w;
+					this.h = o.size.h;
+					this.x = o.pos.x;
+					this.y = o.pos.y;
+				} else {
+					this.desktop.autoWindowPos(this);
+				}
+			});
+		} else {
+			this.desktop.autoWindowPos(this);
 		}
 	},
 
 	getMenu: function (menubar) {
+		menubar.updateMenu('MNU_WINDOW', []);
 	}
 	
 	

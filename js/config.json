@@ -1,9 +1,17 @@
 {
 	"schema": {
-		"version": 1,
+		"version": 10,
 		"name": "zen",
-		"items": []
+		"items": [
+			{"name": "windowData",
+			 "key": {"keyPath": "uid"},
+			 "indices": [
+                 {"name": "uid", "unique": true}
+			 ]
+			}
+		]
 	},
+	
 	"workbench": {
 		"items": [
 			{
@@ -148,6 +156,7 @@
 		}
 		]
 	},
+	
 	"menubar": {
 		"items": [
 			{
@@ -301,4 +310,5 @@
 		}
 		]
 	}
+	
 }

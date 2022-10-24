@@ -47,7 +47,7 @@ App.prototype = {
 			}
 			
 		});
-
+		
 	}
 	
 };

@@ -144,6 +144,7 @@ Desktop.prototype = {
 	},
 	
 	deselectAll: function () {
+		this.menubar.updateMenu('MNU_WINDOW', []);
 		while (this.selected.length > 0) {
 			let o = this.selected.pop();
 			o.deselect();

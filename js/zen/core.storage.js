@@ -353,7 +353,6 @@ Storage.prototype = {
 			var t = self.db.transaction([osName]);
 			var os = t.objectStore(osName);
 			var index = os.index(idxName);
-			
 			var req = index.get(value);
 
 			req.onerror = function(e) {

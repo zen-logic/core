@@ -47,7 +47,6 @@ MenuBar.prototype = {
 		this.menu.innerHTML = '';
 		this.createMenu(this.menu, menu.items);
 	},
-
 	
 	createMenu: function (el, items) {
 		let self = this;
@@ -102,7 +101,6 @@ MenuBar.prototype = {
 		});
 	},
 
-
 	updateMenu: function (id, items) {
 		const menu = this.menu.querySelector('#' + id);
 		if (menu) {
@@ -114,7 +112,6 @@ MenuBar.prototype = {
 			}), items);
 		}
 	}
-	
 	
 };
 
