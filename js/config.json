@@ -1,4 +1,9 @@
 {
+	"schema": {
+		"version": 1,
+		"name": "zen",
+		"items": []
+	},
 	"workbench": {
 		"items": [
 			{
@@ -9,10 +14,11 @@
 			"action": "CreateWindow",
 			"options": {
 				"type": "IconWindow",
+				"title": "System",
 				"single": true,
 				"id": "W_SYS",
 				"size": {"w": 320, "h": 126},
-				"pos": {"x": "centre", "y": "centre"}
+				"pos": {"x": 128, "y": 64}
 			},
 			"items": [
 				{
@@ -22,6 +28,7 @@
 				"action": "CreateWindow",
 				"options": {
 					"type": "IconWindow",
+					"title": "Organisations",
 					"single": true,
 					"id": "W_ORG",
 					"size": {"w": 320, "h": 240}
@@ -34,6 +41,7 @@
 					"action": "CreateWindow",
 					"options": {
 						"type": "IconWindow",
+						"title": "Rich Interactive",
 						"single": true,
 						"id": "W_RICH_INTERACTIVE",
 						"size": {"h": 126}
@@ -46,6 +54,7 @@
 						"action": "CreateWindow",
 						"options": {
 							"type": "IconWindow",
+							"title": "Demo Bubl",
 							"single": true,
 							"id": "W_RICH_DEMO_BUBL",
 							"size": {"w": 320, "h": 240}
@@ -139,11 +148,6 @@
 		}
 		]
 	},
-	"schema": {
-		"version": 1,
-		"name": "zen",
-		"items": []
-	},
 	"menubar": {
 		"items": [
 			{
@@ -199,6 +203,7 @@
 		},
 			{
 			"type": "menu",
+			"id": "MNU_APP",
 			"cls": "app",
 			"label": "Application",
 			"items": [
@@ -211,7 +216,8 @@
 			{
 			"type": "menu",
 			"label": "Window",
-			"items": [
+			"id": "MNU_WINDOW",
+			"_items": [
 				{
 				"type": "action",
 				"label": "Show icons"
@@ -277,8 +283,6 @@
 					"type": "action",
 					"label": "Three"
 				},
-
-					
 					{
 					"type": "separator"
 				},

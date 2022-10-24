@@ -34,8 +34,13 @@ MenuBar.prototype = {
 			tag: 'ul',
 			attr: {class: 'menu-items'}
 		});
+
+		core.observe('SelectWindow', 'menubar', (win) => {
+			if (win) {
+				win.getMenu(this);
+			}
+		});
 		
-		// alert(this.el.getBoundingClientRect().height);
 	},
 
 	setMenu: function (menu) {
@@ -58,6 +63,7 @@ MenuBar.prototype = {
 			let menuItem = core.ui.createElement({
 				parent: el,
 				tag: 'li',
+				id: item['id'],
 				content: item['label']
 			});
 
@@ -94,7 +100,21 @@ MenuBar.prototype = {
 				this.createMenu(menu, item.items);
 			}
 		});
+	},
+
+
+	updateMenu: function (id, items) {
+		const menu = this.menu.querySelector('#' + id);
+		if (menu) {
+			menu.querySelector('ul')?.remove();
+			this.createMenu(core.ui.createElement({
+				parent: menu,
+				tag: 'ul',
+				attr: {class: 'menu-items'}
+			}), items);
+		}
 	}
+	
 	
 };
 

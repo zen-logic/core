@@ -208,6 +208,29 @@ IconWindow.prototype.init = function (params) {
 	return this;
 };
 
+IconWindow.prototype.getMenu = function (menubar) {
+	const items = [
+		{
+			"type": "action",
+			"label": "Show icons"
+		},
+		{
+			"type": "action",
+			"label": "Show list"
+		},
+		{
+			"type": "separator"
+		},
+		{
+			"type": "action",
+			"cls": "disabled",
+			"label": "Properties"
+		}
+	];
+
+	menubar.updateMenu('MNU_WINDOW', items);
+	
+};
 
 core.namespace('core.wb', {
 	IconView: IconView,

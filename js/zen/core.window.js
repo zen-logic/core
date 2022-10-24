@@ -118,22 +118,8 @@ Window.prototype = {
 
 	defaults: function () {
 		this.views = [];
-		
-		this.pos = {
-			x: 0,
-			y: 0,
-			z: 0
-		};
-
-		this.size = {
-			w: 140,
-			h: 96,
-			minW: 0,
-			minH: 0,
-			maxW: -1,
-			maxH: -1
-		};
-
+		this.pos = {x: 0, y: 0, z: 0};
+		this.size = {w: 140, h: 96, minW: 0, minH: 0, maxW: -1, maxH: -1};
 		this.persistState = false;
 	},
 	
@@ -274,7 +260,7 @@ Window.prototype = {
 		this.desktop.deselect(this);
 	},
 
-	saveState: function () {
+	savePos: function () {
 		this.state = {
 			x: this.x,
 			y: this.y,
@@ -288,9 +274,9 @@ Window.prototype = {
 		if (!this.el.classList.contains('minimised')) {
 			let el = this.el.querySelector('.header');
 			let h = el.getBoundingClientRect().height;
-			this.saveState();
-			this.el.style.height = h + 'px';
+			this.savePos();
 			this.el.classList.add('minimised');
+			this.el.style.height = h + 'px';
 		} else {
 			this.w = this.state.w;
 			this.h = this.state.h;
@@ -302,7 +288,7 @@ Window.prototype = {
 		this.el.classList.remove('minimised');
 		
 		if (!this.el.classList.contains('maximised')) {
-			this.saveState();
+			this.savePos();
 			this.x = 0;
 			this.y = 0;
 			this.w = this.desktop.maxX;
@@ -409,19 +395,21 @@ Window.prototype = {
 		this.desktop.el.addEventListener('mouseout', exitWindow);
 	},
 
-
 	saveState: function () {
 		if (this.persistState === true) {
 			core.log('window save state');
 		}
 	},
 
-
 	restoreState: function () {
 		if (this.persistState === true) {
 			core.log('window restore state');
 		}
+	},
+
+	getMenu: function (menubar) {
 	}
+	
 	
 };
 
