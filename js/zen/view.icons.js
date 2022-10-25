@@ -254,7 +254,9 @@ IconWindow.prototype.getMenu = function (menubar) {
 		"type": "separator"
 	}, {
 		"type": "action",
-		"label": "Clean up"
+		"label": "Snap to grid",
+		"action": "SnapWindow",
+		"owner": this
 	}]);
 };
 

@@ -60,7 +60,6 @@ Desktop.prototype = {
 		return icons;
 	},
 
-	
 	init: function (params) {
 		core.log('New Desktop', params);
 		this.id = 'workbench';
@@ -74,12 +73,32 @@ Desktop.prototype = {
 			}
 		});
 
-		this.showGrid();
+		core.observe('ToggleGrid', desktop.id, () => {
+			if (this.grid) {
+				this.hideGrid();
+			} else {
+				this.showGrid();
+			}
+		});
+
+		core.observe('SnapWindow', this.id, (o) => {
+			this.snapWindow(o.owner);
+		});
+
+		core.observe('ArrangeWindows', this.id, (o) => {
+			this.snapWindows(o.owner);
+		});
+		
+
+		
 		return this;
 	},
 
 	cleanup: function () {
 		core.removeObserver('deselect-all', this.id);
+		core.removeObserver('ToggleGrid', this.id);
+		core.removeObserver('SnapWindow', this.id);
+		core.removeObserver('ArrangeWindows', this.id);
 
 		for (const item in this.stack) {
 			if (this.stack[item] instanceof core.wb.Window) {

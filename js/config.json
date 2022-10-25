@@ -305,6 +305,16 @@
 				"type": "action",
 				"cls": "disabled",
 				"label": "Save current"
+			}, {
+				"type": "separator"
+			}, {
+				"type": "action",
+				"label": "Grid",
+				"action": "ToggleGrid"
+			}, {
+				"type": "action",
+				"label": "Arrange windows",
+				"action": "ArrangeWindows"
 			}
 			]
 		}

@@ -335,6 +335,9 @@ Window.prototype = {
 			self.desktop.el.removeEventListener('mouseup', endDrag);
 			self.desktop.el.removeEventListener('mouseout', exitWindow);
 			self.el.classList.remove('dragging');
+			if (self.desktop.grid) {
+				self.desktop.snapWindow(self);
+			}
 			self.saveState();
 		}
 
@@ -376,6 +379,9 @@ Window.prototype = {
 			self.desktop.el.removeEventListener('mousemove', resize);
 			self.desktop.el.removeEventListener('mouseup', endResize);
 			self.desktop.el.removeEventListener('mouseout', exitWindow);
+			if (self.desktop.grid) {
+				self.desktop.snapWindow(self);
+			}
 			self.saveState();
 		}
 

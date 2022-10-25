@@ -8,15 +8,20 @@ window.addEventListener('resize', (e) => {
 
 export const grid = {
 
-	showGrid: function () {
-
+	hideGrid: function () {
 		if (this.grid) {
 			this.grid.remove();
 			delete this.grid;
 		}
-		
+	},
+
+	
+	showGrid: function () {
+
 		const w = this.maxX,
 			  h = this.maxY;
+
+		this.hideGrid();
 		
 		this.grid = core.ui.createElement({
 			tag: 'canvas',
@@ -47,7 +52,7 @@ export const grid = {
 		}
 		
 		ctx.stroke();
-		
+
 	},
 
 	snapWindows: function () {
@@ -73,7 +78,10 @@ export const grid = {
 		win.y = top + this.minY;
 		win.x = left + this.minX;
 		win.w = w;
-		win.h = h;
+		if (!win.el.classList.contains('minimised')) {
+			win.h = h;
+		}
+		win.saveState();
 	}
 	
 
