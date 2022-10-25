@@ -142,14 +142,14 @@ Window.prototype = {
 		return this;
 	},
 
-	afterRender: function () {
+	afterRender: async function () {
 		if (this.cfg.view) {
 			core.ui.loadView(this.cfg.view, this.body).then((view) => {
 				core.log('view did load');
 			});
 		}
 
-		this.restoreState();
+		await this.restoreState();
 		this.select();
 	},
 
@@ -410,23 +410,22 @@ Window.prototype = {
 		}
 	},
 
-	restoreState: function () {
+	restoreState: async function () {
 		if (this.persistState === true) {
 			core.log('window restore state');
-			app.db.get('windowData', this.id).then((o) => {
-				if (o) {
-					// reset
-					this.w = 0; this.h = 0;
-					this.x = 0; this.y = 0;
-
-					this.w = o.size.w;
-					this.h = o.size.h;
-					this.x = o.pos.x;
-					this.y = o.pos.y;
-				} else {
-					this.desktop.autoWindowPos(this);
-				}
-			});
+			const o = await app.db.get('windowData', this.id);
+			if (o) {
+				// reset
+				this.w = 0; this.h = 0;
+				this.x = 0; this.y = 0;
+				
+				this.w = o.size.w;
+				this.h = o.size.h;
+				this.x = o.pos.x;
+				this.y = o.pos.y;
+			} else {
+				this.desktop.autoWindowPos(this);
+			}
 		} else {
 			this.desktop.autoWindowPos(this);
 		}

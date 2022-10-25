@@ -5,9 +5,15 @@ body {
 	height: 100vh;
 }
 
+#wb-grid {
+	position: absolute;
+	z-index: 90;
+}
+
 #workbench {
 	position: absolute;
 	width: 100vw; height: 100vh;
+	z-index: 100;
 	overflow: hidden;
 	-webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */

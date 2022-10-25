@@ -370,6 +370,9 @@ Icon.prototype = {
 			this.parent.select(this, multi);
 			if (this.parent instanceof core.wb.IconView) {
 				desktop.bringToFront(this.parent.parent);
+				// enable the window menu to allow sorting, different
+				// viewstyles etc...
+				core.notify('SelectWindow', this.parent.parent);
 			}
 			this.parent.bringToFront(this);
 			core.notify('SelectIcon', this);

@@ -232,6 +232,13 @@ IconWindow.prototype.afterRender = async function () {
 };
 
 
+IconWindow.prototype.close = function () {
+	core.removeObserver('ViewAsIcons', this.id);
+	core.removeObserver('ViewAsList', this.id);
+	core.wb.Window.prototype.close.call(this);
+};
+
+
 IconWindow.prototype.getMenu = function (menubar) {
 	menubar.updateMenu('MNU_WINDOW', [{
 		"type": "action",
@@ -247,8 +254,7 @@ IconWindow.prototype.getMenu = function (menubar) {
 		"type": "separator"
 	}, {
 		"type": "action",
-		"cls": "disabled",
-		"label": "Properties"
+		"label": "Clean up"
 	}]);
 };
 

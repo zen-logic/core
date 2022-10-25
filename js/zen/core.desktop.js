@@ -4,6 +4,7 @@ import './core.menubar.js';
 import './core.window.js';
 import './core.icon.js';
 import {rubberband} from './mixin.rubberband.js';
+import {grid} from './mixin.grid.js';
 
 
 window.addEventListener('contextmenu', (e) => {
@@ -14,6 +15,7 @@ window.addEventListener('contextmenu', (e) => {
 function Desktop (params) {
 	if (arguments.length > 0) {
 		Object.assign(this, rubberband);
+		Object.assign(this, grid);
 		this.rubberband = null;
 		this.workspace = null;
 		this.stack = {};
@@ -72,6 +74,7 @@ Desktop.prototype = {
 			}
 		});
 
+		this.showGrid();
 		return this;
 	},
 
