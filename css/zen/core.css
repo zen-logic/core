@@ -281,7 +281,9 @@ body {
 	flex-direction: row;
 	align-items: center;
 	width: 100%;
+	min-width: min-content;
 	height: unset;
+	white-space: nowrap;
 }
 
 #workbench .list .icon .image {
