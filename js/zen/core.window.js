@@ -408,7 +408,7 @@ Window.prototype = {
 	saveState: function () {
 		if (this.persistState === true) {
 			core.log('window save state');
-			app.db.put('windowData', {
+			app.db.put('workbenchData', {
 				uid: this.id,
 				pos: this.pos,
 				size: this.size
@@ -419,7 +419,7 @@ Window.prototype = {
 	restoreState: async function () {
 		if (this.persistState === true) {
 			core.log('window restore state');
-			const o = await app.db.get('windowData', this.id);
+			const o = await app.db.get('workbenchData', this.id);
 			if (o) {
 				// reset
 				this.w = 0; this.h = 0;

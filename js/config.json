@@ -1,9 +1,9 @@
 {
 	"schema": {
-		"version": 10,
+		"version": 11,
 		"name": "zen",
 		"items": [
-			{"name": "windowData",
+			{"name": "workbenchData",
 			 "key": {"keyPath": "uid"},
 			 "indices": [
                  {"name": "uid", "unique": true}
@@ -18,7 +18,6 @@
 			"type": "Icon",
 			"image": "img/zen/icon/world.png",
 			"label": "System",
-			"_action": "IconWindow",
 			"action": "CreateWindow",
 			"options": {
 				"type": "IconWindow",

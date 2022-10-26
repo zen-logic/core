@@ -218,6 +218,10 @@ Desktop.prototype = {
 		this.el.append(o.el);
 		this.stack[o.id] = o;
 		o.parent = this;
+		
+		if (this.grid && o instanceof core.wb.Icon) {
+			this.snapIcon(o);
+		}
 	},
 
 	autoIconPos: function (icon) {

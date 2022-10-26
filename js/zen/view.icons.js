@@ -176,6 +176,50 @@ IconView.prototype = {
 			icon.y = icon.pos.y;
 			icon.z = icon.pos.z;
 		}
+	},
+
+
+	removeIconsFromView: function () {
+		const icons = [];
+		for (const item in this.stack) {
+			const icon = this.stack[item];
+			this.el.removeChild(icon.el);
+			icons.push(icon);
+		}
+		return icons;
+	},
+	
+	
+	arrangeIcons: function () {
+		const icons = this.removeIconsFromView();
+		// reset layout
+		this.autopos = {x: 0, y: 0, z: 0};
+		icons.forEach((o) => {
+			this.el.appendChild(o.el);
+			this.autoIconPos(o);
+		});
+	},
+
+	
+	sortIcons: function () {
+		const icons = this.removeIconsFromView();
+
+		icons.sort((a,b) => {
+			if (a.label < b.label) {
+				return -1;
+			}
+			if (a.label > b.label) {
+				return 1;
+			}
+			return 0;
+		});
+		
+		// reset layout
+		this.autopos = {x: 0, y: 0, z: 0};
+		icons.forEach((o) => {
+			this.el.appendChild(o.el);
+			this.autoIconPos(o);
+		});
 	}
 
 };
@@ -227,6 +271,18 @@ IconWindow.prototype.afterRender = async function () {
 		}
 	});
 
+	core.observe('ArrangeIcons', this.id, (src) => {
+		if (src?.owner === this) {
+			this.iconview.arrangeIcons();
+		}
+	});
+
+	core.observe('SortIcons', this.id, (src) => {
+		if (src?.owner === this) {
+			this.iconview.sortIcons();
+		}
+	});
+
 	this.select();
 	
 };
@@ -235,6 +291,8 @@ IconWindow.prototype.afterRender = async function () {
 IconWindow.prototype.close = function () {
 	core.removeObserver('ViewAsIcons', this.id);
 	core.removeObserver('ViewAsList', this.id);
+	core.removeObserver('ArrangeIcons', this.id);
+	core.removeObserver('SortIcons', this.id);
 	core.wb.Window.prototype.close.call(this);
 };
 
@@ -254,6 +312,18 @@ IconWindow.prototype.getMenu = function (menubar) {
 		"type": "separator"
 	}, {
 		"type": "action",
+		"label": "Arrange",
+		"action": "ArrangeIcons",
+		"owner": this
+	}, {
+		"type": "action",
+		"label": "Sort",
+		"action": "SortIcons",
+		"owner": this
+	}, {
+		"type": "separator"
+	}, {
+		"type": "action",
 		"label": "Snap to grid",
 		"action": "SnapWindow",
 		"owner": this
@@ -264,7 +334,7 @@ IconWindow.prototype.getMenu = function (menubar) {
 IconWindow.prototype.saveState = function () {
 	if (this.persistState === true) {
 		core.log('window save state');
-		app.db.put('windowData', {
+		app.db.put('workbenchData', {
 			uid: this.id,
 			pos: this.pos,
 			size: this.size,
@@ -277,7 +347,7 @@ IconWindow.prototype.saveState = function () {
 IconWindow.prototype.restoreState = async function () {
 	if (this.persistState === true) {
 		core.log('window restore state');
-		const o = await app.db.get('windowData', this.id);
+		const o = await app.db.get('workbenchData', this.id);
 		if (o) {
 			// reset
 			this.w = 0; this.h = 0;

@@ -82,7 +82,17 @@ export const grid = {
 			win.h = h;
 		}
 		win.saveState();
+	},
+
+	snapIcon: function (icon) {
+		let top = icon.y - this.minY;
+		let left = icon.x - this.minX;
+
+		top = Math.round(top / GRID_SIZE) * GRID_SIZE;
+		left = Math.round(left / GRID_SIZE) * GRID_SIZE;
+
+		icon.y = top + this.minY;
+		icon.x = left + this.minX;
 	}
-	
 
 };

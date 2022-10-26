@@ -56,6 +56,3 @@ App.prototype = {
 core.getJSON('js/config.json').then((config) => {
 	window.app = new App(config);			
 });
-
-
-
