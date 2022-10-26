@@ -89,7 +89,11 @@ Desktop.prototype = {
 			this.snapWindows(o.owner);
 		});
 		
+		core.observe('ToggleFullscreen', this.id, () => {
+			this.toggleFullscreen();
+		});
 
+		
 		
 		return this;
 	},
@@ -276,6 +280,25 @@ Desktop.prototype = {
 			this.winpos.y += 32;
 		}
 
+	},
+
+
+	toggleFullscreen: function () {
+		let el = document.documentElement;
+
+		if (!document.mozFullScreen && !document.webkitIsFullScreen) {
+			if (el.mozRequestFullScreen) {
+				el.mozRequestFullScreen();
+			} else {
+				el.webkitRequestFullScreen();
+			}
+		} else {
+			if (document.mozCancelFullScreen) {
+				document.mozCancelFullScreen();
+			} else {
+				document.webkitCancelFullScreen();
+			}
+		}
 	}
 	
 };

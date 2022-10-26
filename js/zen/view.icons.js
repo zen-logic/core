@@ -332,7 +332,7 @@ IconWindow.prototype.getMenu = function (menubar) {
 
 
 IconWindow.prototype.saveState = function () {
-	if (this.persistState === true) {
+	if (this.features.includes('persist')) {
 		core.log('window save state');
 		app.db.put('workbenchData', {
 			uid: this.id,
@@ -345,7 +345,7 @@ IconWindow.prototype.saveState = function () {
 
 
 IconWindow.prototype.restoreState = async function () {
-	if (this.persistState === true) {
+	if (this.features.includes('persist')) {
 		core.log('window restore state');
 		const o = await app.db.get('workbenchData', this.id);
 		if (o) {

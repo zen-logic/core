@@ -314,6 +314,12 @@
 				"type": "action",
 				"label": "Arrange windows",
 				"action": "ArrangeWindows"
+			}, {
+				"type": "separator"
+			}, {
+				"type": "action",
+				"label": "Toggle fullscreen",
+				"action": "ToggleFullscreen"
 			}
 			]
 		}

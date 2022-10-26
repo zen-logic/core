@@ -69,18 +69,21 @@ export const grid = {
 
 		top = Math.round(top / GRID_SIZE) * GRID_SIZE;
 		left = Math.round(left / GRID_SIZE) * GRID_SIZE;
-
-		let w = win.w, h = win.h;
-
-		w = Math.round(w / GRID_SIZE) * GRID_SIZE - 1;
-		h = Math.round(h / GRID_SIZE) * GRID_SIZE - 1;
-		
 		win.y = top + this.minY;
 		win.x = left + this.minX;
-		win.w = w;
-		if (!win.el.classList.contains('minimised')) {
-			win.h = h;
+
+		if (win.features.includes('resize')) {
+			let w = win.w, h = win.h;
+
+			w = Math.round(w / GRID_SIZE) * GRID_SIZE - 1;
+			h = Math.round(h / GRID_SIZE) * GRID_SIZE - 1;
+		
+			win.w = w;
+			if (!win.el.classList.contains('minimised')) {
+				win.h = h;
+			}
 		}
+		
 		win.saveState();
 	},
 

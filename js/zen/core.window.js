@@ -120,7 +120,6 @@ Window.prototype = {
 		this.views = [];
 		this.pos = {x: 0, y: 0, z: 0};
 		this.size = {w: 140, h: 96, minW: 0, minH: 0, maxW: -1, maxH: -1};
-		this.persistState = false;
 	},
 	
 	init: function (params) {
@@ -128,14 +127,13 @@ Window.prototype = {
 		this.defaults();
 		this.cfg = params;
 		this.desktop = window.desktop;
-		if (params.id) this.persistState = true;
 		this.id = params.id === undefined ? core.util.createUUID() : params.id;
 		this.size.minW = params?.size?.minW !== undefined ? params.size.minW : this.size.minW;
 		this.size.minH = params?.size?.minH !== undefined ? params.size.minH : this.size.minH;
 		this.size.maxW = params?.size?.maxW !== undefined ? params.size.maxW : this.size.maxW;
 		this.size.maxH = params?.size?.maxH !== undefined ? params.size.maxH : this.size.maxH;
 		this.features = params.features !== undefined ? params.features : [
-			'title', 'status', 'max', 'min', 'resize', 'close'
+			'title', 'status', 'max', 'min', 'resize', 'close', 'persist', 'snap'
 		];
 		this.render();
 		this.afterRender();
@@ -335,7 +333,7 @@ Window.prototype = {
 			self.desktop.el.removeEventListener('mouseup', endDrag);
 			self.desktop.el.removeEventListener('mouseout', exitWindow);
 			self.el.classList.remove('dragging');
-			if (self.desktop.grid) {
+			if (self.desktop.grid && self.features.includes('snap')) {
 				self.desktop.snapWindow(self);
 			}
 			self.saveState();
@@ -379,7 +377,7 @@ Window.prototype = {
 			self.desktop.el.removeEventListener('mousemove', resize);
 			self.desktop.el.removeEventListener('mouseup', endResize);
 			self.desktop.el.removeEventListener('mouseout', exitWindow);
-			if (self.desktop.grid) {
+			if (self.desktop.grid && self.features.includes('snap')) {
 				self.desktop.snapWindow(self);
 			}
 			self.saveState();
@@ -406,7 +404,7 @@ Window.prototype = {
 	},
 
 	saveState: function () {
-		if (this.persistState === true) {
+		if (this.features.includes('persist')) {
 			core.log('window save state');
 			app.db.put('workbenchData', {
 				uid: this.id,
@@ -417,7 +415,7 @@ Window.prototype = {
 	},
 
 	restoreState: async function () {
-		if (this.persistState === true) {
+		if (this.features.includes('persist')) {
 			core.log('window restore state');
 			const o = await app.db.get('workbenchData', this.id);
 			if (o) {
