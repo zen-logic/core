@@ -64,7 +64,7 @@ IconView.prototype = {
 
 	cleanup: function (win) {
 		win.desktop.menubar.updateMenu('MNU_WINDOW', []);
-		core.removeObserver('deselect-all', this.id);
+		core.removeObservers(this.id);
 	},
 	
 	drop: function (o) {
@@ -289,10 +289,7 @@ IconWindow.prototype.afterRender = async function () {
 
 
 IconWindow.prototype.close = function () {
-	core.removeObserver('ViewAsIcons', this.id);
-	core.removeObserver('ViewAsList', this.id);
-	core.removeObserver('ArrangeIcons', this.id);
-	core.removeObserver('SortIcons', this.id);
+	core.removeObservers(this.id);
 	core.wb.Window.prototype.close.call(this);
 };
 

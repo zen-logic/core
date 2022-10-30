@@ -19,6 +19,7 @@
 			"image": "img/zen/icon/world.png",
 			"label": "System",
 			"action": "CreateWindow",
+			"_fixed": true,
 			"options": {
 				"type": "IconWindow",
 				"title": "System",
@@ -270,12 +271,16 @@
 			"items": [
 				{
 				"type": "action",
-				"label": "Reset"
+				"label": "Reset",
+				"action": "ResetWorkbench"
 			},
 				{
 				"type": "separator"
-			},
-				{
+			}, {
+				"type": "action",
+				"cls": "disabled",
+				"label": "Save current"
+			}, {
 				"type": "menu",
 				"label": "Load...",
 				"items": [
@@ -299,11 +304,6 @@
 					"label": "Foobar"
 				}
 				]
-			},
-				{
-				"type": "action",
-				"cls": "disabled",
-				"label": "Save current"
 			}, {
 				"type": "separator"
 			}, {

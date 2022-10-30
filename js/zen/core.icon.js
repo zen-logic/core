@@ -298,7 +298,6 @@ Icon.prototype = {
 		this.id = params.id === undefined ? core.util.createUUID() : params.id;
 		this.data = params.data === undefined ? {} : params.data;
 		this.fixed = params.fixed;
-
 		this.render();
 
 		// provide initial drag info
@@ -329,7 +328,6 @@ Icon.prototype = {
 	},
 
 	setupEvents: function () {
-
 		this.el.addEventListener('mousedown', (e) => {selectIcon(this, e);});
 		
 		this.el.addEventListener('click', (e) => {

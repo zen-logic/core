@@ -81,6 +81,10 @@ Desktop.prototype = {
 			}
 		});
 
+		core.observe('ResetWorkbench', this.id, (o) => {
+			location.reload();
+		});
+
 		core.observe('SnapWindow', this.id, (o) => {
 			this.snapWindow(o.owner);
 		});
@@ -93,16 +97,11 @@ Desktop.prototype = {
 			this.toggleFullscreen();
 		});
 
-		
-		
 		return this;
 	},
 
 	cleanup: function () {
-		core.removeObserver('deselect-all', this.id);
-		core.removeObserver('ToggleGrid', this.id);
-		core.removeObserver('SnapWindow', this.id);
-		core.removeObserver('ArrangeWindows', this.id);
+		core.removeObservers(this.id);
 
 		for (const item in this.stack) {
 			if (this.stack[item] instanceof core.wb.Window) {

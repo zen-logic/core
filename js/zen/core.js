@@ -141,6 +141,15 @@ let core = {
 	removeObserver: function (queue, id) {
 		if (core.observers[queue] !== undefined) {
 			delete core.observers[queue][id];
+			if (Object.keys(core.observers[queue]).length === 0) {
+				delete core.observers[queue];
+			}
+		}
+	},
+
+	removeObservers: function (id) {
+		for (const queue in core.observers) {
+			core.removeObserver(queue, id);
 		}
 	},
 	
